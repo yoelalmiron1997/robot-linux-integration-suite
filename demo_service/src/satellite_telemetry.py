@@ -9,6 +9,7 @@ import os
 import json
 import time
 import signal
+import socket
 import argparse
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
@@ -135,14 +136,17 @@ def run_server(config_path, pid_file, log_file):
 
     def signal_handler(signum, frame):
         log(f"Received signal {signum}. Shutting down service...", log_file)
-        server.server_close()
         if os.path.exists(pid_file):
             try:
                 os.remove(pid_file)
             except Exception:
                 pass
+        try:
+            server.server_close()
+        except Exception:
+            pass
         log("Service stopped cleanly.", log_file)
-        sys.exit(0)
+        os._exit(0)
 
     signal.signal(signal.SIGTERM, signal_handler)
     signal.signal(signal.SIGINT, signal_handler)
