@@ -1,0 +1,1897 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.4.2 (Python 3.11.2 on linux)" generated="2026-07-22T16:39:51.857436" rpa="false" schemaversion="5">
+<suite id="s1" name="Linux Integration Suite - Satellite Telemetry" source="/app/tests">
+<suite id="s1-s1" name="01 Installation" source="/app/tests/01_installation.robot">
+<kw name="Prepare Test Environment" owner="common" type="SETUP">
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:52.003943" level="INFO">Preparing test environment for satellite-telemetry...</msg>
+<arg>Preparing test environment for ${PACKAGE_NAME}...</arg>
+<arg>console=True</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.003339" elapsed="0.000767"/>
+</kw>
+<kw name="Remove File" owner="OperatingSystem">
+<msg time="2026-07-22T16:39:52.004847" level="INFO" html="true">File '&lt;a href="file:///var/run/satellite-telemetry.pid"&gt;/var/run/satellite-telemetry.pid&lt;/a&gt;' does not exist.</msg>
+<arg>${PID_FILE_PATH}</arg>
+<doc>Removes a file with the given path.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.004364" elapsed="0.000574"/>
+</kw>
+<doc>Ensures clean baseline before suite execution.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.002477" elapsed="0.002567"/>
+</kw>
+<test id="s1-s1-t1" name="TC-001 Install Satellite Telemetry Package" line="11">
+<kw name="Install Debian Package" owner="package_keywords">
+<kw name="File Should Exist" owner="OperatingSystem">
+<msg time="2026-07-22T16:39:52.006890" level="INFO" html="true">File '&lt;a href="file:///app/data/packages/satellite-telemetry_1.0.0_all.deb"&gt;/app/data/packages/satellite-telemetry_1.0.0_all.deb&lt;/a&gt;' exists.</msg>
+<arg>${package_path}</arg>
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.006607" elapsed="0.000372"/>
+</kw>
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:39:52.007709" level="INFO">Starting process:
+dpkg -i --force-downgrade /app/resources/../data/packages/satellite-telemetry_1.0.0_all.deb</msg>
+<msg time="2026-07-22T16:39:52.008751" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:39:52.210876" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:39:52.211118" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>dpkg</arg>
+<arg>-i</arg>
+<arg>--force-downgrade</arg>
+<arg>${package_path}</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.007208" elapsed="0.203940"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:52.212021" level="INFO">dpkg install output: Selecting previously unselected package satellite-telemetry.
+(Reading database ... 8827 files and directories currently installed.)
+Preparing to unpack .../satellite-telemetry_1.0.0_all.deb ...
+Unpacking satellite-telemetry (1.0.0) ...
+Setting up satellite-telemetry (1.0.0) ...
+[POSTINST] satellite-telemetry package installation configured successfully.</msg>
+<arg>dpkg install output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.211359" elapsed="0.000712"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-07-22T16:39:52.212803" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>msg=Failed to install .deb package ${package_path}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.212201" elapsed="0.000655"/>
+</kw>
+<arg>${PACKAGE_V1_PATH}</arg>
+<doc>Installs a local Debian .deb package using dpkg.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.006162" elapsed="0.206760"/>
+</kw>
+<kw name="Package Should Be Installed" owner="LinuxPackageLibrary">
+<msg time="2026-07-22T16:39:52.216856" level="INFO">Package 'satellite-telemetry' is correctly installed.</msg>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Verifies that a Debian package is installed on the Linux host using dpkg-query.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.213027" elapsed="0.003936"/>
+</kw>
+<doc>Validate clean installation of the Debian package v1.0.0.</doc>
+<tag>installation</tag>
+<tag>linux</tag>
+<tag>package</tag>
+<tag>smoke</tag>
+<status status="PASS" start="2026-07-22T16:39:52.005165" elapsed="0.211946"/>
+</test>
+<test id="s1-s1-t2" name="TC-002 Validate Installed Version" line="17">
+<kw name="Installed Package Version Should Be" owner="package_keywords">
+<kw name="Get Installed Package Version" owner="LinuxPackageLibrary">
+<msg time="2026-07-22T16:39:52.222197" level="INFO">Installed package 'satellite-telemetry' version: 1.0.0</msg>
+<msg time="2026-07-22T16:39:52.222435" level="INFO">${actual_version} = 1.0.0</msg>
+<var>${actual_version}</var>
+<arg>${package_name}</arg>
+<doc>Returns the version string of an installed Debian package.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.218362" elapsed="0.004096"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<arg>${actual_version}</arg>
+<arg>${expected_version}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.222661" elapsed="0.000529"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<arg>1.0.0</arg>
+<doc>Verifies installed package version matches expected value.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.217990" elapsed="0.005403"/>
+</kw>
+<doc>Verify installed package version matches expected baseline version 1.0.0.</doc>
+<tag>installation</tag>
+<tag>package</tag>
+<status status="PASS" start="2026-07-22T16:39:52.217432" elapsed="0.006076"/>
+</test>
+<test id="s1-s1-t3" name="TC-003 Validate Installed Files Structure" line="22">
+<kw name="Validate Package Files Installed" owner="validation_keywords">
+<kw name="File Should Exist" owner="OperatingSystem">
+<msg time="2026-07-22T16:39:52.225430" level="INFO" html="true">File '&lt;a href="file:///usr/bin/satellite-telemetry"&gt;/usr/bin/satellite-telemetry&lt;/a&gt;' exists.</msg>
+<arg>/usr/bin/satellite-telemetry</arg>
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.225190" elapsed="0.000304"/>
+</kw>
+<kw name="File Should Exist" owner="OperatingSystem">
+<msg time="2026-07-22T16:39:52.225805" level="INFO" html="true">File '&lt;a href="file:///etc/init.d/satellite-telemetry"&gt;/etc/init.d/satellite-telemetry&lt;/a&gt;' exists.</msg>
+<arg>/etc/init.d/satellite-telemetry</arg>
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.225606" elapsed="0.000320"/>
+</kw>
+<kw name="File Should Exist" owner="OperatingSystem">
+<msg time="2026-07-22T16:39:52.226161" level="INFO" html="true">File '&lt;a href="file:///etc/satellite-telemetry/config.json"&gt;/etc/satellite-telemetry/config.json&lt;/a&gt;' exists.</msg>
+<arg>${CONFIG_FILE_PATH}</arg>
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.226021" elapsed="0.000299"/>
+</kw>
+<kw name="Directory Should Exist" owner="OperatingSystem">
+<msg time="2026-07-22T16:39:52.226507" level="INFO" html="true">Directory '&lt;a href="file:///var/log/satellite-telemetry"&gt;/var/log/satellite-telemetry&lt;/a&gt;' exists.</msg>
+<arg>/var/log/satellite-telemetry</arg>
+<doc>Fails unless the given path points to an existing directory.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.226411" elapsed="0.000134"/>
+</kw>
+<doc>Verifies expected binaries and directories are present after installation.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.224627" elapsed="0.001972"/>
+</kw>
+<doc>Verify presence of executables, configuration files, and log directories.</doc>
+<tag>files</tag>
+<tag>installation</tag>
+<status status="PASS" start="2026-07-22T16:39:52.223864" elapsed="0.002828"/>
+</test>
+<kw name="Restore Test Environment" owner="common" type="TEARDOWN">
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:52.228835" level="INFO">Restoring test environment...</msg>
+<arg>Restoring test environment...</arg>
+<arg>console=True</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.227714" elapsed="0.001248"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="Stop Service">
+<msg time="2026-07-22T16:39:52.230900" level="FAIL">No keyword with name 'Stop Service' found.</msg>
+<arg>${PACKAGE_NAME}</arg>
+<status status="FAIL" start="2026-07-22T16:39:52.230846" elapsed="0.000105">No keyword with name 'Stop Service' found.</status>
+</kw>
+<arg>Stop Service</arg>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.229192" elapsed="0.001908"/>
+</kw>
+<doc>Cleans up any running processes or temporary artifacts.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.227445" elapsed="0.003722"/>
+</kw>
+<doc>Suite for validating Debian package installation and initial file structure.</doc>
+<status status="PASS" start="2026-07-22T16:39:51.885162" elapsed="0.346069"/>
+</suite>
+<suite id="s1-s2" name="02 Dependencies" source="/app/tests/02_dependencies.robot">
+<test id="s1-s2-t1" name="TC-004 Validate Package Dependencies Requirement" line="7">
+<kw name="Package Should Have Declared Dependency" owner="package_keywords">
+<kw name="Get Package Dependencies" owner="LinuxPackageLibrary">
+<msg time="2026-07-22T16:39:52.243894" level="INFO">Declared dependencies for /app/resources/../data/packages/satellite-telemetry_1.0.0_all.deb: python3, curl</msg>
+<msg time="2026-07-22T16:39:52.244085" level="INFO">${deps} = python3, curl</msg>
+<var>${deps}</var>
+<arg>${package_path}</arg>
+<doc>Extracts declared dependencies from a .deb package control metadata.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.236175" elapsed="0.007933"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>${deps}</arg>
+<arg>${expected_dependency}</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.244420" elapsed="0.000562"/>
+</kw>
+<arg>${PACKAGE_V1_PATH}</arg>
+<arg>python3</arg>
+<doc>Validates that a package metadata declares expected dependency.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.235696" elapsed="0.009352"/>
+</kw>
+<kw name="Package Should Have Declared Dependency" owner="package_keywords">
+<kw name="Get Package Dependencies" owner="LinuxPackageLibrary">
+<msg time="2026-07-22T16:39:52.252594" level="INFO">Declared dependencies for /app/resources/../data/packages/satellite-telemetry_1.0.0_all.deb: python3, curl</msg>
+<msg time="2026-07-22T16:39:52.252765" level="INFO">${deps} = python3, curl</msg>
+<var>${deps}</var>
+<arg>${package_path}</arg>
+<doc>Extracts declared dependencies from a .deb package control metadata.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.245460" elapsed="0.007328"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>${deps}</arg>
+<arg>${expected_dependency}</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.252973" elapsed="0.000347"/>
+</kw>
+<arg>${PACKAGE_V1_PATH}</arg>
+<arg>curl</arg>
+<doc>Validates that a package metadata declares expected dependency.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.245200" elapsed="0.008182"/>
+</kw>
+<doc>Verify package metadata declares mandatory dependencies (python3, curl).</doc>
+<tag>dependencies</tag>
+<tag>package</tag>
+<status status="PASS" start="2026-07-22T16:39:52.234842" elapsed="0.018637"/>
+</test>
+<test id="s1-s2-t2" name="TC-013 Missing Dependency Scenario" line="13">
+<kw name="Get Package Dependencies" owner="LinuxPackageLibrary">
+<msg time="2026-07-22T16:39:52.261745" level="INFO">Declared dependencies for /app/resources/../data/packages/satellite-telemetry_1.0.0_all.deb: python3, curl</msg>
+<msg time="2026-07-22T16:39:52.261991" level="INFO">${deps} = python3, curl</msg>
+<var>${deps}</var>
+<arg>${PACKAGE_V1_PATH}</arg>
+<doc>Extracts declared dependencies from a .deb package control metadata.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.254176" elapsed="0.007840"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>${deps}</arg>
+<arg>python3</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.262174" elapsed="0.000574"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:52.263215" level="INFO">Verified dependency check enforcement logic for satellite-telemetry.</msg>
+<arg>Verified dependency check enforcement logic for ${PACKAGE_NAME}.</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.262871" elapsed="0.000445"/>
+</kw>
+<doc>Simulates package manager behavior when evaluating dependencies.</doc>
+<tag>dependencies</tag>
+<tag>negative</tag>
+<status status="PASS" start="2026-07-22T16:39:52.253689" elapsed="0.009824"/>
+</test>
+<doc>Suite for package dependency requirements and missing dependency scenarios.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.231953" elapsed="0.032127"/>
+</suite>
+<suite id="s1-s3" name="03 Configuration" source="/app/tests/03_configuration.robot">
+<test id="s1-s3-t1" name="TC-005 Validate Configuration File Schema" line="11">
+<kw name="Prepare Test Environment" owner="common" type="SETUP">
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:52.271546" level="INFO">Preparing test environment for satellite-telemetry...</msg>
+<arg>Preparing test environment for ${PACKAGE_NAME}...</arg>
+<arg>console=True</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.271170" elapsed="0.000468"/>
+</kw>
+<kw name="Remove File" owner="OperatingSystem">
+<msg time="2026-07-22T16:39:52.271904" level="INFO" html="true">File '&lt;a href="file:///var/run/satellite-telemetry.pid"&gt;/var/run/satellite-telemetry.pid&lt;/a&gt;' does not exist.</msg>
+<arg>${PID_FILE_PATH}</arg>
+<doc>Removes a file with the given path.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.271740" elapsed="0.000207"/>
+</kw>
+<doc>Ensures clean baseline before suite execution.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.270802" elapsed="0.001243"/>
+</kw>
+<kw name="Validate Configuration Content" owner="validation_keywords">
+<kw name="Validate Json Configuration" owner="LinuxPackageLibrary">
+<msg time="2026-07-22T16:39:52.272639" level="INFO">Validated JSON configuration in '/etc/satellite-telemetry/config.json' successfully.</msg>
+<msg time="2026-07-22T16:39:52.272717" level="INFO">${cfg} = {'service_name': 'satellite-telemetry', 'version': '1.0.0', 'host': '0.0.0.0', 'port': 8080, 'log_level': 'INFO', 'telemetry_interval_sec': 5, 'enabled_sensors': ['temperature', 'battery', 'altitude',...</msg>
+<var>${cfg}</var>
+<arg>${CONFIG_FILE_PATH}</arg>
+<arg>service_name,version,port</arg>
+<doc>Parses a JSON configuration file and asserts required top-level keys.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.272375" elapsed="0.000362"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<arg>${cfg["service_name"]}</arg>
+<arg>satellite-telemetry</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.272825" elapsed="0.000553"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<arg>${cfg["version"]}</arg>
+<arg>${expected_version}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.273470" elapsed="0.000590"/>
+</kw>
+<arg>1.0.0</arg>
+<doc>Validates key fields in the service configuration file.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.272185" elapsed="0.001926"/>
+</kw>
+<kw name="Restore Test Environment" owner="common" type="TEARDOWN">
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:52.274868" level="INFO">Restoring test environment...</msg>
+<arg>Restoring test environment...</arg>
+<arg>console=True</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.274535" elapsed="0.000429"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="Stop Service" owner="service_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:39:52.277582" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry stop</msg>
+<msg time="2026-07-22T16:39:52.278252" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:39:52.279322" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:39:52.279501" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>stop</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.277294" elapsed="0.002232"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:52.280396" level="INFO">Service stop output: Stopping satellite-telemetry...
+satellite-telemetry is not running.</msg>
+<arg>Service stop output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.279690" elapsed="0.000744"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Stops the specified Linux service.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.276888" elapsed="0.003598"/>
+</kw>
+<arg>Stop Service</arg>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.276125" elapsed="0.004399"/>
+</kw>
+<doc>Cleans up any running processes or temporary artifacts.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.274330" elapsed="0.006234"/>
+</kw>
+<doc>Validate that the installed JSON config file contains valid keys and default values.</doc>
+<tag>configuration</tag>
+<tag>linux</tag>
+<status status="PASS" start="2026-07-22T16:39:52.270268" elapsed="0.010332"/>
+</test>
+<test id="s1-s3-t2" name="TC-014 Invalid Configuration Scenario" line="16">
+<kw name="Prepare Test Environment" owner="common" type="SETUP">
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:52.281853" level="INFO">Preparing test environment for satellite-telemetry...</msg>
+<arg>Preparing test environment for ${PACKAGE_NAME}...</arg>
+<arg>console=True</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.281579" elapsed="0.000380"/>
+</kw>
+<kw name="Remove File" owner="OperatingSystem">
+<msg time="2026-07-22T16:39:52.282304" level="INFO" html="true">File '&lt;a href="file:///var/run/satellite-telemetry.pid"&gt;/var/run/satellite-telemetry.pid&lt;/a&gt;' does not exist.</msg>
+<arg>${PID_FILE_PATH}</arg>
+<doc>Removes a file with the given path.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.282131" elapsed="0.000213"/>
+</kw>
+<doc>Ensures clean baseline before suite execution.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.281301" elapsed="0.001089"/>
+</kw>
+<kw name="Set Configuration File" owner="validation_keywords">
+<kw name="Copy File" owner="OperatingSystem">
+<msg time="2026-07-22T16:39:52.284303" level="INFO" html="true">Copied file from '&lt;a href="file:///app/data/configs/invalid_config.json"&gt;/app/data/configs/invalid_config.json&lt;/a&gt;' to '&lt;a href="file:///etc/satellite-telemetry/config.json"&gt;/etc/satellite-telemetry/config.json&lt;/a&gt;'.</msg>
+<arg>${source_config_path}</arg>
+<arg>${CONFIG_FILE_PATH}</arg>
+<doc>Copies the source file into the destination.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.282801" elapsed="0.001567"/>
+</kw>
+<arg>${INVALID_CONFIG_SRC}</arg>
+<doc>Overwrites the service configuration file with custom test config.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.282586" elapsed="0.001841"/>
+</kw>
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:39:52.284913" level="INFO">Starting process:
+/usr/bin/satellite-telemetry run --config /etc/satellite-telemetry/config.json</msg>
+<msg time="2026-07-22T16:39:52.285536" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:39:52.343847" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:39:52.344032" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<var>${result}</var>
+<arg>/usr/bin/satellite-telemetry</arg>
+<arg>run</arg>
+<arg>--config</arg>
+<arg>${CONFIG_FILE_PATH}</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.284527" elapsed="0.059530"/>
+</kw>
+<kw name="Should Not Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-07-22T16:39:52.344859" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are equal after converting them to integers.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.344228" elapsed="0.000681"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>${result.stdout}</arg>
+<arg>CRITICAL</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.344998" elapsed="0.000488"/>
+</kw>
+<kw name="Set Configuration File" owner="validation_keywords">
+<kw name="Copy File" owner="OperatingSystem">
+<msg time="2026-07-22T16:39:52.347264" level="INFO" html="true">Copied file from '&lt;a href="file:///app/data/configs/valid_config.json"&gt;/app/data/configs/valid_config.json&lt;/a&gt;' to '&lt;a href="file:///etc/satellite-telemetry/config.json"&gt;/etc/satellite-telemetry/config.json&lt;/a&gt;'.</msg>
+<arg>${source_config_path}</arg>
+<arg>${CONFIG_FILE_PATH}</arg>
+<doc>Copies the source file into the destination.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.346028" elapsed="0.001291"/>
+</kw>
+<arg>${VALID_CONFIG_SRC}</arg>
+<doc>Overwrites the service configuration file with custom test config.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.345619" elapsed="0.001755"/>
+</kw>
+<kw name="Restore Test Environment" owner="common" type="TEARDOWN">
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:52.348018" level="INFO">Restoring test environment...</msg>
+<arg>Restoring test environment...</arg>
+<arg>console=True</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.347785" elapsed="0.000329"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="Stop Service" owner="service_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:39:52.349384" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry stop</msg>
+<msg time="2026-07-22T16:39:52.350004" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:39:52.350764" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:39:52.350879" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>stop</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.349003" elapsed="0.001964"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:52.351873" level="INFO">Service stop output: Stopping satellite-telemetry...
+satellite-telemetry is not running.</msg>
+<arg>Service stop output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.351232" elapsed="0.000679"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Stops the specified Linux service.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.348696" elapsed="0.003267"/>
+</kw>
+<arg>Stop Service</arg>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.348249" elapsed="0.003802"/>
+</kw>
+<doc>Cleans up any running processes or temporary artifacts.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.347564" elapsed="0.004592"/>
+</kw>
+<doc>Verify that service fails to start gracefully when config file contains invalid JSON.</doc>
+<tag>configuration</tag>
+<tag>negative</tag>
+<tag>service</tag>
+<status status="PASS" start="2026-07-22T16:39:52.280887" elapsed="0.071949"/>
+</test>
+<doc>Suite for configuration file validation and negative invalid syntax testing.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.264644" elapsed="0.088630"/>
+</suite>
+<suite id="s1-s4" name="04 Service" source="/app/tests/04_service.robot">
+<test id="s1-s4-t1" name="TC-006 Validate Service Startup" line="10">
+<kw name="Prepare Test Environment" owner="common" type="SETUP">
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:52.357945" level="INFO">Preparing test environment for satellite-telemetry...</msg>
+<arg>Preparing test environment for ${PACKAGE_NAME}...</arg>
+<arg>console=True</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.357644" elapsed="0.000455"/>
+</kw>
+<kw name="Remove File" owner="OperatingSystem">
+<msg time="2026-07-22T16:39:52.358541" level="INFO" html="true">File '&lt;a href="file:///var/run/satellite-telemetry.pid"&gt;/var/run/satellite-telemetry.pid&lt;/a&gt;' does not exist.</msg>
+<arg>${PID_FILE_PATH}</arg>
+<doc>Removes a file with the given path.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.358373" elapsed="0.000216"/>
+</kw>
+<doc>Ensures clean baseline before suite execution.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.357349" elapsed="0.001291"/>
+</kw>
+<kw name="Start Service" owner="service_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:39:52.359551" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry start</msg>
+<msg time="2026-07-22T16:39:52.360159" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:39:53.363933" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:39:53.364096" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>start</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.359193" elapsed="1.004926"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:53.364897" level="INFO">Service start output: Starting satellite-telemetry...
+Started satellite-telemetry (PID 83).</msg>
+<arg>Service start output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:53.364284" elapsed="0.000657"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-07-22T16:39:53.365548" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>msg=Failed to start service ${service_name}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-07-22T16:39:53.365029" elapsed="0.000567"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Starts the specified Linux service via init.d script.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.358782" elapsed="1.006869"/>
+</kw>
+<kw name="Service Should Be Running" owner="service_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:39:53.366254" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry status</msg>
+<msg time="2026-07-22T16:39:53.366733" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:39:53.368631" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:39:53.368703" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>status</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:39:53.366021" elapsed="0.002701"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:53.369278" level="INFO">Service status output: satellite-telemetry is running (PID 83).</msg>
+<arg>Service status output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:53.368821" elapsed="0.000491"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-07-22T16:39:53.369979" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>msg=Service ${service_name} is not running</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-07-22T16:39:53.369396" elapsed="0.000648"/>
+</kw>
+<kw name="File Should Exist" owner="OperatingSystem">
+<msg time="2026-07-22T16:39:53.370321" level="INFO" html="true">File '&lt;a href="file:///var/run/satellite-telemetry.pid"&gt;/var/run/satellite-telemetry.pid&lt;/a&gt;' exists.</msg>
+<arg>${PID_FILE_PATH}</arg>
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<status status="PASS" start="2026-07-22T16:39:53.370152" elapsed="0.000225"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Verifies that the Linux service status is running.</doc>
+<status status="PASS" start="2026-07-22T16:39:53.365787" elapsed="0.004655"/>
+</kw>
+<kw name="Restore Test Environment" owner="common" type="TEARDOWN">
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:53.371409" level="INFO">Restoring test environment...</msg>
+<arg>Restoring test environment...</arg>
+<arg>console=True</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:53.371158" elapsed="0.000356"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="Stop Service" owner="service_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:39:53.372441" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry stop</msg>
+<msg time="2026-07-22T16:39:53.373034" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:39:53.376150" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:39:53.376320" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>stop</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:39:53.372197" elapsed="0.004147"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:53.377189" level="INFO">Service stop output: Stopping satellite-telemetry...
+Stopped satellite-telemetry.</msg>
+<arg>Service stop output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:53.376549" elapsed="0.000688"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Stops the specified Linux service.</doc>
+<status status="PASS" start="2026-07-22T16:39:53.371934" elapsed="0.005365"/>
+</kw>
+<arg>Stop Service</arg>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2026-07-22T16:39:53.371618" elapsed="0.005722"/>
+</kw>
+<doc>Cleans up any running processes or temporary artifacts.</doc>
+<status status="PASS" start="2026-07-22T16:39:53.370660" elapsed="0.006722"/>
+</kw>
+<doc>Start service and verify process status and PID creation.</doc>
+<tag>service</tag>
+<tag>smoke</tag>
+<status status="PASS" start="2026-07-22T16:39:52.356784" elapsed="1.020635"/>
+</test>
+<test id="s1-s4-t2" name="TC-007 Validate Service Stop" line="16">
+<kw name="Prepare Test Environment" owner="common" type="SETUP">
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:53.379229" level="INFO">Preparing test environment for satellite-telemetry...</msg>
+<arg>Preparing test environment for ${PACKAGE_NAME}...</arg>
+<arg>console=True</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:53.378746" elapsed="0.000839"/>
+</kw>
+<kw name="Remove File" owner="OperatingSystem">
+<msg time="2026-07-22T16:39:53.380961" level="INFO" html="true">File '&lt;a href="file:///var/run/satellite-telemetry.pid"&gt;/var/run/satellite-telemetry.pid&lt;/a&gt;' does not exist.</msg>
+<arg>${PID_FILE_PATH}</arg>
+<doc>Removes a file with the given path.</doc>
+<status status="PASS" start="2026-07-22T16:39:53.379709" elapsed="0.001315"/>
+</kw>
+<doc>Ensures clean baseline before suite execution.</doc>
+<status status="PASS" start="2026-07-22T16:39:53.378322" elapsed="0.002772"/>
+</kw>
+<kw name="Start Service" owner="service_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:39:53.381920" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry start</msg>
+<msg time="2026-07-22T16:39:53.382587" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:39:54.386611" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:39:54.386796" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>start</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:39:53.381587" elapsed="1.005234"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:54.387579" level="INFO">Service start output: Starting satellite-telemetry...
+Started satellite-telemetry (PID 92).</msg>
+<arg>Service start output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.386983" elapsed="0.000634"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-07-22T16:39:54.388358" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>msg=Failed to start service ${service_name}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.387725" elapsed="0.000683"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Starts the specified Linux service via init.d script.</doc>
+<status status="PASS" start="2026-07-22T16:39:53.381345" elapsed="1.007120"/>
+</kw>
+<kw name="Service Should Be Running" owner="service_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:39:54.389079" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry status</msg>
+<msg time="2026-07-22T16:39:54.389556" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:39:54.391354" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:39:54.391424" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>status</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.388821" elapsed="0.002622"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:54.391984" level="INFO">Service status output: satellite-telemetry is running (PID 92).</msg>
+<arg>Service status output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.391538" elapsed="0.000482"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-07-22T16:39:54.392646" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>msg=Service ${service_name} is not running</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.392100" elapsed="0.000590"/>
+</kw>
+<kw name="File Should Exist" owner="OperatingSystem">
+<msg time="2026-07-22T16:39:54.392906" level="INFO" html="true">File '&lt;a href="file:///var/run/satellite-telemetry.pid"&gt;/var/run/satellite-telemetry.pid&lt;/a&gt;' exists.</msg>
+<arg>${PID_FILE_PATH}</arg>
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.392775" elapsed="0.000167"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Verifies that the Linux service status is running.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.388607" elapsed="0.004379"/>
+</kw>
+<kw name="Stop Service" owner="service_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:39:54.393545" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry stop</msg>
+<msg time="2026-07-22T16:39:54.393987" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:39:54.396932" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:39:54.397089" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>stop</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.393316" elapsed="0.003796"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:54.397991" level="INFO">Service stop output: Stopping satellite-telemetry...
+Stopped satellite-telemetry.</msg>
+<arg>Service stop output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.397334" elapsed="0.000704"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Stops the specified Linux service.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.393099" elapsed="0.005001"/>
+</kw>
+<kw name="Service Should Be Stopped" owner="service_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:39:54.398756" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry status</msg>
+<msg time="2026-07-22T16:39:54.399340" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:39:54.400153" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:39:54.400223" level="INFO">${result} = &lt;result object with rc 3&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>status</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.398498" elapsed="0.001744"/>
+</kw>
+<kw name="Should Not Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-07-22T16:39:54.400828" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are equal after converting them to integers.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.400355" elapsed="0.000518"/>
+</kw>
+<kw name="File Should Not Exist" owner="OperatingSystem">
+<msg time="2026-07-22T16:39:54.401102" level="INFO" html="true">File '&lt;a href="file:///var/run/satellite-telemetry.pid"&gt;/var/run/satellite-telemetry.pid&lt;/a&gt;' does not exist.</msg>
+<arg>${PID_FILE_PATH}</arg>
+<doc>Fails if the given path points to an existing file.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.400956" elapsed="0.000183"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Verifies that the service is stopped and PID file is removed.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.398252" elapsed="0.002931"/>
+</kw>
+<kw name="Restore Test Environment" owner="common" type="TEARDOWN">
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:54.401748" level="INFO">Restoring test environment...</msg>
+<arg>Restoring test environment...</arg>
+<arg>console=True</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.401557" elapsed="0.000272"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="Stop Service" owner="service_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:39:54.402878" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry stop</msg>
+<msg time="2026-07-22T16:39:54.403454" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:39:54.404364" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:39:54.404455" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>stop</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.402630" elapsed="0.002485"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:54.405860" level="INFO">Service stop output: Stopping satellite-telemetry...
+satellite-telemetry is not running.</msg>
+<arg>Service stop output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.405305" elapsed="0.000593"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Stops the specified Linux service.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.402381" elapsed="0.003569"/>
+</kw>
+<arg>Stop Service</arg>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.401922" elapsed="0.004064"/>
+</kw>
+<doc>Cleans up any running processes or temporary artifacts.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.401369" elapsed="0.004656"/>
+</kw>
+<doc>Stop service and verify process termination and PID file removal.</doc>
+<tag>service</tag>
+<status status="PASS" start="2026-07-22T16:39:53.377718" elapsed="1.028342"/>
+</test>
+<test id="s1-s4-t3" name="TC-015 Service Recovery After SIGKILL" line="24">
+<kw name="Prepare Test Environment" owner="common" type="SETUP">
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:54.407340" level="INFO">Preparing test environment for satellite-telemetry...</msg>
+<arg>Preparing test environment for ${PACKAGE_NAME}...</arg>
+<arg>console=True</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.407065" elapsed="0.000368"/>
+</kw>
+<kw name="Remove File" owner="OperatingSystem">
+<msg time="2026-07-22T16:39:54.407689" level="INFO" html="true">File '&lt;a href="file:///var/run/satellite-telemetry.pid"&gt;/var/run/satellite-telemetry.pid&lt;/a&gt;' does not exist.</msg>
+<arg>${PID_FILE_PATH}</arg>
+<doc>Removes a file with the given path.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.407529" elapsed="0.000199"/>
+</kw>
+<doc>Ensures clean baseline before suite execution.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.406726" elapsed="0.001047"/>
+</kw>
+<kw name="Start Service" owner="service_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:39:54.408441" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry start</msg>
+<msg time="2026-07-22T16:39:54.408945" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:39:55.412935" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:39:55.413097" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>start</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.408199" elapsed="1.004921"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:55.413855" level="INFO">Service start output: Starting satellite-telemetry...
+Started satellite-telemetry (PID 103).</msg>
+<arg>Service start output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:55.413277" elapsed="0.000615"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-07-22T16:39:55.414486" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>msg=Failed to start service ${service_name}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-07-22T16:39:55.413977" elapsed="0.000556"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Starts the specified Linux service via init.d script.</doc>
+<status status="PASS" start="2026-07-22T16:39:54.407988" elapsed="1.006621"/>
+</kw>
+<kw name="Service Should Be Running" owner="service_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:39:55.415265" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry status</msg>
+<msg time="2026-07-22T16:39:55.415725" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:39:55.417575" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:39:55.417696" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>status</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:39:55.414954" elapsed="0.002766"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:55.418364" level="INFO">Service status output: satellite-telemetry is running (PID 103).</msg>
+<arg>Service status output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:55.417849" elapsed="0.000552"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-07-22T16:39:55.419062" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>msg=Service ${service_name} is not running</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-07-22T16:39:55.418487" elapsed="0.000622"/>
+</kw>
+<kw name="File Should Exist" owner="OperatingSystem">
+<msg time="2026-07-22T16:39:55.419328" level="INFO" html="true">File '&lt;a href="file:///var/run/satellite-telemetry.pid"&gt;/var/run/satellite-telemetry.pid&lt;/a&gt;' exists.</msg>
+<arg>${PID_FILE_PATH}</arg>
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<status status="PASS" start="2026-07-22T16:39:55.419197" elapsed="0.000168"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Verifies that the Linux service status is running.</doc>
+<status status="PASS" start="2026-07-22T16:39:55.414748" elapsed="0.004664"/>
+</kw>
+<kw name="Get Process ID By Name" owner="LinuxPackageLibrary">
+<msg time="2026-07-22T16:39:55.422868" level="INFO">Found process PIDs for 'satellite-telemetry': ['103']</msg>
+<msg time="2026-07-22T16:39:55.423068" level="INFO">${pid} = 103</msg>
+<var>${pid}</var>
+<arg>satellite-telemetry</arg>
+<doc>Returns the PID of a running process by name or script command using pgrep.</doc>
+<status status="PASS" start="2026-07-22T16:39:55.419494" elapsed="0.003600"/>
+</kw>
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:39:55.423578" level="INFO">Starting process:
+kill -9 103</msg>
+<msg time="2026-07-22T16:39:55.424149" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:39:55.424985" level="INFO">Process completed.</msg>
+<arg>kill</arg>
+<arg>-9</arg>
+<arg>${pid}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:39:55.423254" elapsed="0.001814"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-07-22T16:39:56.425762" level="INFO">Slept 1 second.</msg>
+<arg>1s</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="PASS" start="2026-07-22T16:39:55.425237" elapsed="1.000642"/>
+</kw>
+<kw name="Start Service" owner="service_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:39:56.426722" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry start</msg>
+<msg time="2026-07-22T16:39:56.427252" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:39:57.431900" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:39:57.432082" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>start</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:39:56.426409" elapsed="1.005698"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:57.433042" level="INFO">Service start output: Starting satellite-telemetry...
+Started satellite-telemetry (PID 112).</msg>
+<arg>Service start output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:57.432296" elapsed="0.001429"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-07-22T16:39:57.434426" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>msg=Failed to start service ${service_name}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-07-22T16:39:57.433854" elapsed="0.000629"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Starts the specified Linux service via init.d script.</doc>
+<status status="PASS" start="2026-07-22T16:39:56.426105" elapsed="1.008436"/>
+</kw>
+<kw name="Service Should Be Running" owner="service_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:39:57.435226" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry status</msg>
+<msg time="2026-07-22T16:39:57.435739" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:39:57.437984" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:39:57.438177" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>status</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:39:57.434931" elapsed="0.003270"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:57.439325" level="INFO">Service status output: satellite-telemetry is running (PID 112).</msg>
+<arg>Service status output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:57.438395" elapsed="0.000982"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-07-22T16:39:57.440075" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>msg=Service ${service_name} is not running</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-07-22T16:39:57.439509" elapsed="0.000608"/>
+</kw>
+<kw name="File Should Exist" owner="OperatingSystem">
+<msg time="2026-07-22T16:39:57.440346" level="INFO" html="true">File '&lt;a href="file:///var/run/satellite-telemetry.pid"&gt;/var/run/satellite-telemetry.pid&lt;/a&gt;' exists.</msg>
+<arg>${PID_FILE_PATH}</arg>
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<status status="PASS" start="2026-07-22T16:39:57.440203" elapsed="0.000180"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Verifies that the Linux service status is running.</doc>
+<status status="PASS" start="2026-07-22T16:39:57.434683" elapsed="0.005749"/>
+</kw>
+<kw name="Restore Test Environment" owner="common" type="TEARDOWN">
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:57.441830" level="INFO">Restoring test environment...</msg>
+<arg>Restoring test environment...</arg>
+<arg>console=True</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:57.441599" elapsed="0.000325"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="Stop Service" owner="service_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:39:57.442819" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry stop</msg>
+<msg time="2026-07-22T16:39:57.443482" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:39:57.446756" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:39:57.446926" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>stop</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:39:57.442567" elapsed="0.004383"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:57.447902" level="INFO">Service stop output: Stopping satellite-telemetry...
+Stopped satellite-telemetry.</msg>
+<arg>Service stop output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:57.447233" elapsed="0.000716"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Stops the specified Linux service.</doc>
+<status status="PASS" start="2026-07-22T16:39:57.442306" elapsed="0.005705"/>
+</kw>
+<arg>Stop Service</arg>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2026-07-22T16:39:57.442021" elapsed="0.006031"/>
+</kw>
+<doc>Cleans up any running processes or temporary artifacts.</doc>
+<status status="PASS" start="2026-07-22T16:39:57.440612" elapsed="0.007504"/>
+</kw>
+<doc>Simulate ungraceful crash (SIGKILL) and verify recovery restart.</doc>
+<tag>recovery</tag>
+<tag>service</tag>
+<status status="PASS" start="2026-07-22T16:39:54.406259" elapsed="3.041906"/>
+</test>
+<doc>Suite for service lifecycle management: start, stop, and process recovery.</doc>
+<status status="PASS" start="2026-07-22T16:39:52.353796" elapsed="5.094712"/>
+</suite>
+<suite id="s1-s5" name="05 Health Check" source="/app/tests/05_health_check.robot">
+<kw name="Start Service And Verify" type="SETUP">
+<kw name="Start Service" owner="service_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:39:57.453308" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry start</msg>
+<msg time="2026-07-22T16:39:57.453949" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:39:58.458043" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:39:58.458204" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>start</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:39:57.452920" elapsed="1.005308"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:58.459045" level="INFO">Service start output: Starting satellite-telemetry...
+Started satellite-telemetry (PID 121).</msg>
+<arg>Service start output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:58.458433" elapsed="0.000656"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-07-22T16:39:58.459696" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>msg=Failed to start service ${service_name}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-07-22T16:39:58.459176" elapsed="0.000564"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Starts the specified Linux service via init.d script.</doc>
+<status status="PASS" start="2026-07-22T16:39:57.452720" elapsed="1.007076"/>
+</kw>
+<kw name="Service Should Be Running" owner="service_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:39:58.460358" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry status</msg>
+<msg time="2026-07-22T16:39:58.460880" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:39:58.462725" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:39:58.462850" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>status</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:39:58.460127" elapsed="0.002749"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:39:58.463553" level="INFO">Service status output: satellite-telemetry is running (PID 121).</msg>
+<arg>Service status output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:39:58.463051" elapsed="0.000541"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-07-22T16:39:58.464875" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>msg=Service ${service_name} is not running</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-07-22T16:39:58.464335" elapsed="0.000585"/>
+</kw>
+<kw name="File Should Exist" owner="OperatingSystem">
+<msg time="2026-07-22T16:39:58.465147" level="INFO" html="true">File '&lt;a href="file:///var/run/satellite-telemetry.pid"&gt;/var/run/satellite-telemetry.pid&lt;/a&gt;' exists.</msg>
+<arg>${PID_FILE_PATH}</arg>
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<status status="PASS" start="2026-07-22T16:39:58.465008" elapsed="0.000177"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Verifies that the Linux service status is running.</doc>
+<status status="PASS" start="2026-07-22T16:39:58.459953" elapsed="0.005285"/>
+</kw>
+<status status="PASS" start="2026-07-22T16:39:57.452479" elapsed="1.012799"/>
+</kw>
+<test id="s1-s5-t1" name="TC-008 Health Endpoint Validation" line="15">
+<kw name="Query Health Endpoint" owner="service_keywords">
+<kw name="Create Session" owner="RequestsLibrary">
+<msg time="2026-07-22T16:39:58.466303" level="INFO">Creating Session using : alias=telemetry_session, url=http://127.0.0.1:8080, headers={},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<arg>telemetry_session</arg>
+<arg>${SERVICE_URL}</arg>
+<arg>verify=False</arg>
+<arg>disable_warnings=1</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<status status="PASS" start="2026-07-22T16:39:58.466071" elapsed="0.000453"/>
+</kw>
+<kw name="Wait Until Keyword Succeeds" owner="BuiltIn">
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2026-07-22T16:39:59.080752" level="FAIL">ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</msg>
+<arg>telemetry_session</arg>
+<arg>/health</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2026-07-22T16:39:58.467213" elapsed="0.615568">ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</status>
+</kw>
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2026-07-22T16:40:00.689402" level="FAIL">ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</msg>
+<arg>telemetry_session</arg>
+<arg>/health</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2026-07-22T16:40:00.083201" elapsed="0.607266">ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</status>
+</kw>
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2026-07-22T16:40:02.299370" level="FAIL">ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</msg>
+<arg>telemetry_session</arg>
+<arg>/health</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2026-07-22T16:40:01.691132" elapsed="0.609418">ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</status>
+</kw>
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2026-07-22T16:40:03.906798" level="FAIL">ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</msg>
+<arg>telemetry_session</arg>
+<arg>/health</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2026-07-22T16:40:03.300925" elapsed="0.607080">ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</status>
+</kw>
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2026-07-22T16:40:05.514483" level="FAIL">ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</msg>
+<arg>telemetry_session</arg>
+<arg>/health</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2026-07-22T16:40:04.908555" elapsed="0.607026">ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</status>
+</kw>
+<msg time="2026-07-22T16:40:05.515701" level="FAIL">Keyword 'GET On Session' failed after retrying 5 times. The last error was: ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</msg>
+<var>${response}</var>
+<arg>5x</arg>
+<arg>1s</arg>
+<arg>GET On Session</arg>
+<arg>telemetry_session</arg>
+<arg>/health</arg>
+<doc>Runs the specified keyword and retries if it fails.</doc>
+<status status="FAIL" start="2026-07-22T16:39:58.466634" elapsed="7.050003">Keyword 'GET On Session' failed after retrying 5 times. The last error was: ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</status>
+</kw>
+<return>
+<value>${response}</value>
+<status status="NOT RUN" start="2026-07-22T16:40:05.516711" elapsed="0.000027"/>
+</return>
+<var>${response}</var>
+<doc>Sends a GET HTTP request to the /health endpoint with retry logic for port readiness.</doc>
+<status status="FAIL" start="2026-07-22T16:39:58.465834" elapsed="7.051004">Keyword 'GET On Session' failed after retrying 5 times. The last error was: ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</status>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<arg>${response.status_code}</arg>
+<arg>200</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" start="2026-07-22T16:40:05.516973" elapsed="0.000018"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<var>${json}</var>
+<arg>${response.json()}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" start="2026-07-22T16:40:05.517076" elapsed="0.000014"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<arg>${json["status"]}</arg>
+<arg>ok</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="NOT RUN" start="2026-07-22T16:40:05.517163" elapsed="0.000014"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<arg>${json["service"]}</arg>
+<arg>satellite-telemetry</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="NOT RUN" start="2026-07-22T16:40:05.517257" elapsed="0.000798"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<arg>${json["version"]}</arg>
+<arg>1.0.0</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="NOT RUN" start="2026-07-22T16:40:05.518151" elapsed="0.000015"/>
+</kw>
+<doc>Validate HTTP GET /health returns 200 OK with expected JSON payload.</doc>
+<tag>health</tag>
+<tag>integration</tag>
+<tag>service</tag>
+<status status="FAIL" start="2026-07-22T16:39:58.465333" elapsed="7.052967">Keyword 'GET On Session' failed after retrying 5 times. The last error was: ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</status>
+</test>
+<kw name="Stop Service" owner="service_keywords" type="TEARDOWN">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:40:05.519572" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry stop</msg>
+<msg time="2026-07-22T16:40:05.520268" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:40:05.523838" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:40:05.524027" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>stop</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:40:05.518992" elapsed="0.005061"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:40:05.524940" level="INFO">Service stop output: Stopping satellite-telemetry...
+Stopped satellite-telemetry.</msg>
+<arg>Service stop output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:40:05.524246" elapsed="0.000739"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Stops the specified Linux service.</doc>
+<status status="PASS" start="2026-07-22T16:40:05.518782" elapsed="0.006265"/>
+</kw>
+<doc>Integration test suite for HTTP /health REST endpoint validation.</doc>
+<status status="FAIL" start="2026-07-22T16:39:57.449109" elapsed="8.075970"/>
+</suite>
+<suite id="s1-s6" name="06 Logs" source="/app/tests/06_logs.robot">
+<kw name="Start Service And Verify" type="SETUP">
+<kw name="Start Service" owner="service_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:40:05.529526" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry start</msg>
+<msg time="2026-07-22T16:40:05.530272" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:40:06.533807" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:40:06.534029" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>start</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:40:05.529226" elapsed="1.004829"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:40:06.535243" level="INFO">Service start output: Starting satellite-telemetry...
+Started satellite-telemetry (PID 130).</msg>
+<arg>Service start output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:40:06.534287" elapsed="0.001003"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-07-22T16:40:06.536443" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>msg=Failed to start service ${service_name}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-07-22T16:40:06.535424" elapsed="0.001122"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Starts the specified Linux service via init.d script.</doc>
+<status status="PASS" start="2026-07-22T16:40:05.528995" elapsed="1.007661"/>
+</kw>
+<kw name="Service Should Be Running" owner="service_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:40:06.537496" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry status</msg>
+<msg time="2026-07-22T16:40:06.538129" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:40:06.540205" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:40:06.540364" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>status</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:40:06.537165" elapsed="0.003232"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:40:06.541106" level="INFO">Service status output: satellite-telemetry is running (PID 130).</msg>
+<arg>Service status output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:40:06.540560" elapsed="0.000585"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-07-22T16:40:06.541753" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>msg=Service ${service_name} is not running</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-07-22T16:40:06.541230" elapsed="0.000566"/>
+</kw>
+<kw name="File Should Exist" owner="OperatingSystem">
+<msg time="2026-07-22T16:40:06.542011" level="INFO" html="true">File '&lt;a href="file:///var/run/satellite-telemetry.pid"&gt;/var/run/satellite-telemetry.pid&lt;/a&gt;' exists.</msg>
+<arg>${PID_FILE_PATH}</arg>
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<status status="PASS" start="2026-07-22T16:40:06.541881" elapsed="0.000167"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Verifies that the Linux service status is running.</doc>
+<status status="PASS" start="2026-07-22T16:40:06.536862" elapsed="0.005234"/>
+</kw>
+<status status="PASS" start="2026-07-22T16:40:05.528799" elapsed="1.013339"/>
+</kw>
+<test id="s1-s6-t1" name="TC-009 Validate Log Generation and Formatting" line="15">
+<kw name="Query Health Endpoint" owner="service_keywords">
+<kw name="Create Session" owner="RequestsLibrary">
+<msg time="2026-07-22T16:40:06.543037" level="INFO">Creating Session using : alias=telemetry_session, url=http://127.0.0.1:8080, headers={},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<arg>telemetry_session</arg>
+<arg>${SERVICE_URL}</arg>
+<arg>verify=False</arg>
+<arg>disable_warnings=1</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<status status="PASS" start="2026-07-22T16:40:06.542830" elapsed="0.000466"/>
+</kw>
+<kw name="Wait Until Keyword Succeeds" owner="BuiltIn">
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2026-07-22T16:40:07.157205" level="FAIL">ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</msg>
+<arg>telemetry_session</arg>
+<arg>/health</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2026-07-22T16:40:06.543824" elapsed="0.614470">ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</status>
+</kw>
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2026-07-22T16:40:08.765245" level="FAIL">ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</msg>
+<arg>telemetry_session</arg>
+<arg>/health</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2026-07-22T16:40:08.158653" elapsed="0.608485">ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</status>
+</kw>
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2026-07-22T16:40:10.373651" level="FAIL">ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</msg>
+<arg>telemetry_session</arg>
+<arg>/health</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2026-07-22T16:40:09.767530" elapsed="0.607173">ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</status>
+</kw>
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2026-07-22T16:40:11.979713" level="FAIL">ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</msg>
+<arg>telemetry_session</arg>
+<arg>/health</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2026-07-22T16:40:11.375121" elapsed="0.605726">ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</status>
+</kw>
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2026-07-22T16:40:13.587021" level="FAIL">ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</msg>
+<arg>telemetry_session</arg>
+<arg>/health</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2026-07-22T16:40:12.981210" elapsed="0.606850">ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</status>
+</kw>
+<msg time="2026-07-22T16:40:13.588175" level="FAIL">Keyword 'GET On Session' failed after retrying 5 times. The last error was: ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</msg>
+<var>${response}</var>
+<arg>5x</arg>
+<arg>1s</arg>
+<arg>GET On Session</arg>
+<arg>telemetry_session</arg>
+<arg>/health</arg>
+<doc>Runs the specified keyword and retries if it fails.</doc>
+<status status="FAIL" start="2026-07-22T16:40:06.543407" elapsed="7.045723">Keyword 'GET On Session' failed after retrying 5 times. The last error was: ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</status>
+</kw>
+<return>
+<value>${response}</value>
+<status status="NOT RUN" start="2026-07-22T16:40:13.589209" elapsed="0.000029"/>
+</return>
+<doc>Sends a GET HTTP request to the /health endpoint with retry logic for port readiness.</doc>
+<status status="FAIL" start="2026-07-22T16:40:06.542658" elapsed="7.046740">Keyword 'GET On Session' failed after retrying 5 times. The last error was: ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</status>
+</kw>
+<kw name="Service Log Should Contain" owner="LinuxPackageLibrary">
+<arg>${LOG_FILE_PATH}</arg>
+<arg>Starting Satellite Telemetry Service</arg>
+<doc>Asserts that a service log file contains expected string content.</doc>
+<status status="NOT RUN" start="2026-07-22T16:40:13.589572" elapsed="0.000023"/>
+</kw>
+<kw name="Service Log Should Contain" owner="LinuxPackageLibrary">
+<arg>${LOG_FILE_PATH}</arg>
+<arg>HTTP GET /health - 200 OK</arg>
+<doc>Asserts that a service log file contains expected string content.</doc>
+<status status="NOT RUN" start="2026-07-22T16:40:13.589673" elapsed="0.000015"/>
+</kw>
+<doc>Verify that log file is created and contains service startup messages.</doc>
+<tag>integration</tag>
+<tag>logs</tag>
+<status status="FAIL" start="2026-07-22T16:40:06.542185" elapsed="7.047654">Keyword 'GET On Session' failed after retrying 5 times. The last error was: ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /health (Caused by ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))</status>
+</test>
+<kw name="Stop Service" owner="service_keywords" type="TEARDOWN">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:40:13.591012" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry stop</msg>
+<msg time="2026-07-22T16:40:13.591769" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:40:13.595724" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:40:13.595910" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>stop</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:40:13.590602" elapsed="0.005333"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:40:13.596700" level="INFO">Service stop output: Stopping satellite-telemetry...
+Stopped satellite-telemetry.</msg>
+<arg>Service stop output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:40:13.596108" elapsed="0.000653"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Stops the specified Linux service.</doc>
+<status status="PASS" start="2026-07-22T16:40:13.590309" elapsed="0.006503"/>
+</kw>
+<doc>Suite for log generation and log format assertions.</doc>
+<status status="FAIL" start="2026-07-22T16:40:05.525706" elapsed="8.071135"/>
+</suite>
+<suite id="s1-s7" name="07 Upgrade" source="/app/tests/07_upgrade.robot">
+<kw name="Prepare Test Environment" owner="common" type="SETUP">
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:40:13.601370" level="INFO">Preparing test environment for satellite-telemetry...</msg>
+<arg>Preparing test environment for ${PACKAGE_NAME}...</arg>
+<arg>console=True</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:40:13.600959" elapsed="0.000501"/>
+</kw>
+<kw name="Remove File" owner="OperatingSystem">
+<msg time="2026-07-22T16:40:13.601831" level="INFO" html="true">File '&lt;a href="file:///var/run/satellite-telemetry.pid"&gt;/var/run/satellite-telemetry.pid&lt;/a&gt;' does not exist.</msg>
+<arg>${PID_FILE_PATH}</arg>
+<doc>Removes a file with the given path.</doc>
+<status status="PASS" start="2026-07-22T16:40:13.601569" elapsed="0.000306"/>
+</kw>
+<doc>Ensures clean baseline before suite execution.</doc>
+<status status="PASS" start="2026-07-22T16:40:13.600479" elapsed="0.001447"/>
+</kw>
+<test id="s1-s7-t1" name="TC-010 Perform Package Upgrade to Version 1.1.0" line="12">
+<kw name="Install Debian Package" owner="package_keywords">
+<kw name="File Should Exist" owner="OperatingSystem">
+<msg time="2026-07-22T16:40:13.604342" level="INFO" html="true">File '&lt;a href="file:///app/data/packages/satellite-telemetry_1.0.0_all.deb"&gt;/app/data/packages/satellite-telemetry_1.0.0_all.deb&lt;/a&gt;' exists.</msg>
+<arg>${package_path}</arg>
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<status status="PASS" start="2026-07-22T16:40:13.604092" elapsed="0.000314"/>
+</kw>
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:40:13.604946" level="INFO">Starting process:
+dpkg -i --force-downgrade /app/resources/../data/packages/satellite-telemetry_1.0.0_all.deb</msg>
+<msg time="2026-07-22T16:40:13.605840" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:40:13.819420" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:40:13.819590" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>dpkg</arg>
+<arg>-i</arg>
+<arg>--force-downgrade</arg>
+<arg>${package_path}</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:40:13.604602" elapsed="0.215012"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:40:13.820373" level="INFO">dpkg install output: (Reading database ... 8831 files and directories currently installed.)
+Preparing to unpack .../satellite-telemetry_1.0.0_all.deb ...
+Unpacking satellite-telemetry (1.0.0) over (1.0.0) ...
+Setting up satellite-telemetry (1.0.0) ...
+[POSTINST] satellite-telemetry package installation configured successfully.</msg>
+<arg>dpkg install output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:40:13.819788" elapsed="0.000626"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-07-22T16:40:13.821019" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>msg=Failed to install .deb package ${package_path}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-07-22T16:40:13.820502" elapsed="0.000562"/>
+</kw>
+<arg>${PACKAGE_V1_PATH}</arg>
+<doc>Installs a local Debian .deb package using dpkg.</doc>
+<status status="PASS" start="2026-07-22T16:40:13.602538" elapsed="0.218585"/>
+</kw>
+<kw name="Installed Package Version Should Be" owner="package_keywords">
+<kw name="Get Installed Package Version" owner="LinuxPackageLibrary">
+<msg time="2026-07-22T16:40:13.825120" level="INFO">Installed package 'satellite-telemetry' version: 1.0.0</msg>
+<msg time="2026-07-22T16:40:13.825348" level="INFO">${actual_version} = 1.0.0</msg>
+<var>${actual_version}</var>
+<arg>${package_name}</arg>
+<doc>Returns the version string of an installed Debian package.</doc>
+<status status="PASS" start="2026-07-22T16:40:13.821574" elapsed="0.003802"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<arg>${actual_version}</arg>
+<arg>${expected_version}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="PASS" start="2026-07-22T16:40:13.825540" elapsed="0.000349"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<arg>1.0.0</arg>
+<doc>Verifies installed package version matches expected value.</doc>
+<status status="PASS" start="2026-07-22T16:40:13.821254" elapsed="0.004715"/>
+</kw>
+<kw name="Install Debian Package" owner="package_keywords">
+<kw name="File Should Exist" owner="OperatingSystem">
+<msg time="2026-07-22T16:40:13.826497" level="INFO" html="true">File '&lt;a href="file:///app/data/packages/satellite-telemetry_1.1.0_all.deb"&gt;/app/data/packages/satellite-telemetry_1.1.0_all.deb&lt;/a&gt;' exists.</msg>
+<arg>${package_path}</arg>
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<status status="PASS" start="2026-07-22T16:40:13.826356" elapsed="0.000181"/>
+</kw>
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:40:13.826909" level="INFO">Starting process:
+dpkg -i --force-downgrade /app/resources/../data/packages/satellite-telemetry_1.1.0_all.deb</msg>
+<msg time="2026-07-22T16:40:13.827487" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:40:14.045948" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:40:14.046114" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>dpkg</arg>
+<arg>-i</arg>
+<arg>--force-downgrade</arg>
+<arg>${package_path}</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:40:13.826637" elapsed="0.219501"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:40:14.046867" level="INFO">dpkg install output: (Reading database ... 8831 files and directories currently installed.)
+Preparing to unpack .../satellite-telemetry_1.1.0_all.deb ...
+Unpacking satellite-telemetry (1.1.0) over (1.0.0) ...
+Setting up satellite-telemetry (1.1.0) ...
+Installing new version of config file /etc/satellite-telemetry/config.json ...
+[POSTINST] satellite-telemetry package v1.1.0 configured successfully.</msg>
+<arg>dpkg install output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.046307" elapsed="0.000597"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-07-22T16:40:14.047545" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>msg=Failed to install .deb package ${package_path}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.047016" elapsed="0.000572"/>
+</kw>
+<arg>${PACKAGE_V2_PATH}</arg>
+<doc>Installs a local Debian .deb package using dpkg.</doc>
+<status status="PASS" start="2026-07-22T16:40:13.826126" elapsed="0.221515"/>
+</kw>
+<kw name="Installed Package Version Should Be" owner="package_keywords">
+<kw name="Get Installed Package Version" owner="LinuxPackageLibrary">
+<msg time="2026-07-22T16:40:14.051405" level="INFO">Installed package 'satellite-telemetry' version: 1.1.0</msg>
+<msg time="2026-07-22T16:40:14.051579" level="INFO">${actual_version} = 1.1.0</msg>
+<var>${actual_version}</var>
+<arg>${package_name}</arg>
+<doc>Returns the version string of an installed Debian package.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.048033" elapsed="0.003569"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<arg>${actual_version}</arg>
+<arg>${expected_version}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.051758" elapsed="0.000344"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<arg>1.1.0</arg>
+<doc>Verifies installed package version matches expected value.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.047774" elapsed="0.004383"/>
+</kw>
+<doc>Upgrade installed package from 1.0.0 to 1.1.0 via dpkg -i.</doc>
+<tag>package</tag>
+<tag>upgrade</tag>
+<status status="PASS" start="2026-07-22T16:40:13.601990" elapsed="0.450259"/>
+</test>
+<test id="s1-s7-t2" name="TC-011 Validate Configuration Preservation After Upgrade" line="20">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:40:14.053091" level="INFO">Starting process:
+sed -i s/8080/9090/g /etc/satellite-telemetry/config.json</msg>
+<msg time="2026-07-22T16:40:14.053771" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:40:14.055444" level="INFO">Process completed.</msg>
+<arg>sed</arg>
+<arg>-i</arg>
+<arg>s/8080/9090/g</arg>
+<arg>${CONFIG_FILE_PATH}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.052795" elapsed="0.002746"/>
+</kw>
+<kw name="Install Debian Package" owner="package_keywords">
+<kw name="File Should Exist" owner="OperatingSystem">
+<msg time="2026-07-22T16:40:14.056324" level="INFO" html="true">File '&lt;a href="file:///app/data/packages/satellite-telemetry_1.1.0_all.deb"&gt;/app/data/packages/satellite-telemetry_1.1.0_all.deb&lt;/a&gt;' exists.</msg>
+<arg>${package_path}</arg>
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.056079" elapsed="0.001181"/>
+</kw>
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:40:14.057986" level="INFO">Starting process:
+dpkg -i --force-downgrade /app/resources/../data/packages/satellite-telemetry_1.1.0_all.deb</msg>
+<msg time="2026-07-22T16:40:14.058577" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:40:14.277092" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:40:14.277262" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>dpkg</arg>
+<arg>-i</arg>
+<arg>--force-downgrade</arg>
+<arg>${package_path}</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.057524" elapsed="0.219829"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:40:14.278123" level="INFO">dpkg install output: (Reading database ... 8831 files and directories currently installed.)
+Preparing to unpack .../satellite-telemetry_1.1.0_all.deb ...
+Unpacking satellite-telemetry (1.1.0) over (1.1.0) ...
+Setting up satellite-telemetry (1.1.0) ...
+[POSTINST] satellite-telemetry package v1.1.0 configured successfully.</msg>
+<arg>dpkg install output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.277557" elapsed="0.000605"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-07-22T16:40:14.278799" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>msg=Failed to install .deb package ${package_path}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.278252" elapsed="0.000589"/>
+</kw>
+<arg>${PACKAGE_V2_PATH}</arg>
+<doc>Installs a local Debian .deb package using dpkg.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.055808" elapsed="0.223087"/>
+</kw>
+<kw name="Validate Json Configuration" owner="LinuxPackageLibrary">
+<msg time="2026-07-22T16:40:14.279188" level="INFO">Validated JSON configuration in '/etc/satellite-telemetry/config.json' successfully.</msg>
+<msg time="2026-07-22T16:40:14.279255" level="INFO">${cfg} = {'service_name': 'satellite-telemetry', 'version': '1.1.0', 'host': '0.0.0.0', 'port': 9090, 'log_level': 'DEBUG', 'telemetry_interval_sec': 3, 'enabled_sensors': ['temperature', 'battery', 'altitude'...</msg>
+<var>${cfg}</var>
+<arg>${CONFIG_FILE_PATH}</arg>
+<arg>port</arg>
+<doc>Parses a JSON configuration file and asserts required top-level keys.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.278981" elapsed="0.000293"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<msg time="2026-07-22T16:40:14.279792" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${cfg["port"]}</arg>
+<arg>9090</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.279359" elapsed="0.000475"/>
+</kw>
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:40:14.280162" level="INFO">Starting process:
+sed -i s/9090/8080/g /etc/satellite-telemetry/config.json</msg>
+<msg time="2026-07-22T16:40:14.280742" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:40:14.282204" level="INFO">Process completed.</msg>
+<arg>sed</arg>
+<arg>-i</arg>
+<arg>s/9090/8080/g</arg>
+<arg>${CONFIG_FILE_PATH}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.279919" elapsed="0.002345"/>
+</kw>
+<doc>Verify modified configuration settings persist after package upgrade.</doc>
+<tag>configuration</tag>
+<tag>upgrade</tag>
+<status status="PASS" start="2026-07-22T16:40:14.052435" elapsed="0.229969"/>
+</test>
+<kw name="Restore Test Environment" owner="common" type="TEARDOWN">
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:40:14.283499" level="INFO">Restoring test environment...</msg>
+<arg>Restoring test environment...</arg>
+<arg>console=True</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.283218" elapsed="0.000442"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="Stop Service" owner="service_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:40:14.284824" level="INFO">Starting process:
+/etc/init.d/satellite-telemetry stop</msg>
+<msg time="2026-07-22T16:40:14.285540" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:40:14.286455" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:40:14.286563" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>/etc/init.d/${service_name}</arg>
+<arg>stop</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.284463" elapsed="0.002121"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:40:14.287283" level="INFO">Service stop output: Stopping satellite-telemetry...
+satellite-telemetry is not running.</msg>
+<arg>Service stop output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.286736" elapsed="0.000584"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Stops the specified Linux service.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.284234" elapsed="0.003136"/>
+</kw>
+<arg>Stop Service</arg>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.283810" elapsed="0.003630"/>
+</kw>
+<doc>Cleans up any running processes or temporary artifacts.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.282843" elapsed="0.004646"/>
+</kw>
+<doc>Suite for Debian package upgrade testing and config file preservation.</doc>
+<status status="PASS" start="2026-07-22T16:40:13.597475" elapsed="0.690037"/>
+</suite>
+<suite id="s1-s8" name="08 Removal" source="/app/tests/08_removal.robot">
+<test id="s1-s8-t1" name="TC-012 Validate Clean Package Removal" line="9">
+<kw name="Install Debian Package" owner="package_keywords">
+<kw name="File Should Exist" owner="OperatingSystem">
+<msg time="2026-07-22T16:40:14.291747" level="INFO" html="true">File '&lt;a href="file:///app/data/packages/satellite-telemetry_1.0.0_all.deb"&gt;/app/data/packages/satellite-telemetry_1.0.0_all.deb&lt;/a&gt;' exists.</msg>
+<arg>${package_path}</arg>
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.291599" elapsed="0.000258"/>
+</kw>
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:40:14.292245" level="INFO">Starting process:
+dpkg -i --force-downgrade /app/resources/../data/packages/satellite-telemetry_1.0.0_all.deb</msg>
+<msg time="2026-07-22T16:40:14.292941" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:40:14.495475" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:40:14.495637" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>dpkg</arg>
+<arg>-i</arg>
+<arg>--force-downgrade</arg>
+<arg>${package_path}</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.291954" elapsed="0.203706"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:40:14.496387" level="INFO">dpkg install output: dpkg: warning: downgrading satellite-telemetry from 1.1.0 to 1.0.0
+(Reading database ... 8831 files and directories currently installed.)
+Preparing to unpack .../satellite-telemetry_1.0.0_all.deb ...
+Unpacking satellite-telemetry (1.0.0) over (1.1.0) ...
+Setting up satellite-telemetry (1.0.0) ...
+Installing new version of config file /etc/satellite-telemetry/config.json ...
+[POSTINST] satellite-telemetry package installation configured successfully.</msg>
+<arg>dpkg install output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.495830" elapsed="0.001563"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-07-22T16:40:14.498329" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>msg=Failed to install .deb package ${package_path}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.497620" elapsed="0.000765"/>
+</kw>
+<arg>${PACKAGE_V1_PATH}</arg>
+<doc>Installs a local Debian .deb package using dpkg.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.291345" elapsed="0.207126"/>
+</kw>
+<kw name="Package Should Be Installed" owner="LinuxPackageLibrary">
+<msg time="2026-07-22T16:40:14.502133" level="INFO">Package 'satellite-telemetry' is correctly installed.</msg>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Verifies that a Debian package is installed on the Linux host using dpkg-query.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.498589" elapsed="0.003615"/>
+</kw>
+<kw name="Remove Debian Package" owner="package_keywords">
+<kw name="Run Process" owner="Process">
+<msg time="2026-07-22T16:40:14.502964" level="INFO">Starting process:
+dpkg -P satellite-telemetry</msg>
+<msg time="2026-07-22T16:40:14.503424" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-07-22T16:40:14.685097" level="INFO">Process completed.</msg>
+<msg time="2026-07-22T16:40:14.685260" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<var>${result}</var>
+<arg>dpkg</arg>
+<arg>-P</arg>
+<arg>${package_name}</arg>
+<arg>stderr=STDOUT</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.502685" elapsed="0.182598"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-07-22T16:40:14.686103" level="INFO">dpkg purge output: (Reading database ... 8831 files and directories currently installed.)
+Removing satellite-telemetry (1.0.0) ...
+Stopping satellite-telemetry...
+satellite-telemetry is not running.
+[PRERM] satellite-telemetry service stopped for removal.
+Purging configuration files for satellite-telemetry (1.0.0) ...</msg>
+<arg>dpkg purge output: ${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.685508" elapsed="0.000638"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-07-22T16:40:14.686733" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>msg=Failed to remove package ${package_name}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.686233" elapsed="0.000543"/>
+</kw>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Purges a Debian package from the Linux environment.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.502396" elapsed="0.184435"/>
+</kw>
+<kw name="Package Should Not Be Installed" owner="LinuxPackageLibrary">
+<msg time="2026-07-22T16:40:14.690292" level="INFO">Verified package 'satellite-telemetry' is not installed.</msg>
+<arg>${PACKAGE_NAME}</arg>
+<doc>Verifies that a Debian package is not installed on the system.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.686917" elapsed="0.003444"/>
+</kw>
+<kw name="Validate Package Files Removed" owner="validation_keywords">
+<kw name="File Should Not Exist" owner="OperatingSystem">
+<msg time="2026-07-22T16:40:14.690874" level="INFO" html="true">File '&lt;a href="file:///usr/bin/satellite-telemetry"&gt;/usr/bin/satellite-telemetry&lt;/a&gt;' does not exist.</msg>
+<arg>/usr/bin/satellite-telemetry</arg>
+<doc>Fails if the given path points to an existing file.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.690743" elapsed="0.000170"/>
+</kw>
+<kw name="File Should Not Exist" owner="OperatingSystem">
+<msg time="2026-07-22T16:40:14.691114" level="INFO" html="true">File '&lt;a href="file:///etc/init.d/satellite-telemetry"&gt;/etc/init.d/satellite-telemetry&lt;/a&gt;' does not exist.</msg>
+<arg>/etc/init.d/satellite-telemetry</arg>
+<doc>Fails if the given path points to an existing file.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.690991" elapsed="0.000166"/>
+</kw>
+<doc>Verifies binaries and configuration files are removed after package purge.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.690532" elapsed="0.000668"/>
+</kw>
+<doc>Purge package using dpkg -P and verify binaries and init scripts are removed.</doc>
+<tag>clean</tag>
+<tag>package</tag>
+<tag>removal</tag>
+<status status="PASS" start="2026-07-22T16:40:14.290763" elapsed="0.400518"/>
+</test>
+<doc>Suite for package removal/purge testing and clean filesystem validation.</doc>
+<status status="PASS" start="2026-07-22T16:40:14.288056" elapsed="0.403503"/>
+</suite>
+<status status="FAIL" start="2026-07-22T16:39:51.859288" elapsed="22.832835"/>
+</suite>
+<statistics>
+<total>
+<stat pass="13" fail="2" skip="0">All Tests</stat>
+</total>
+<tag>
+<stat pass="1" fail="0" skip="0">clean</stat>
+<stat pass="3" fail="0" skip="0">configuration</stat>
+<stat pass="2" fail="0" skip="0">dependencies</stat>
+<stat pass="1" fail="0" skip="0">files</stat>
+<stat pass="0" fail="1" skip="0">health</stat>
+<stat doc="Installation Tests" pass="3" fail="0" skip="0">installation</stat>
+<stat doc="Integration Tests" pass="0" fail="2" skip="0">integration</stat>
+<stat pass="2" fail="0" skip="0">linux</stat>
+<stat pass="0" fail="1" skip="0">logs</stat>
+<stat pass="2" fail="0" skip="0">negative</stat>
+<stat pass="5" fail="0" skip="0">package</stat>
+<stat pass="1" fail="0" skip="0">recovery</stat>
+<stat pass="1" fail="0" skip="0">removal</stat>
+<stat doc="Service Lifecycle Tests" pass="4" fail="1" skip="0">service</stat>
+<stat pass="2" fail="0" skip="0">smoke</stat>
+<stat doc="Package Upgrade Tests" pass="2" fail="0" skip="0">upgrade</stat>
+</tag>
+<suite>
+<stat name="Linux Integration Suite - Satellite Telemetry" id="s1" pass="13" fail="2" skip="0">Linux Integration Suite - Satellite Telemetry</stat>
+<stat name="01 Installation" id="s1-s1" pass="3" fail="0" skip="0">Linux Integration Suite - Satellite Telemetry.01 Installation</stat>
+<stat name="02 Dependencies" id="s1-s2" pass="2" fail="0" skip="0">Linux Integration Suite - Satellite Telemetry.02 Dependencies</stat>
+<stat name="03 Configuration" id="s1-s3" pass="2" fail="0" skip="0">Linux Integration Suite - Satellite Telemetry.03 Configuration</stat>
+<stat name="04 Service" id="s1-s4" pass="3" fail="0" skip="0">Linux Integration Suite - Satellite Telemetry.04 Service</stat>
+<stat name="05 Health Check" id="s1-s5" pass="0" fail="1" skip="0">Linux Integration Suite - Satellite Telemetry.05 Health Check</stat>
+<stat name="06 Logs" id="s1-s6" pass="0" fail="1" skip="0">Linux Integration Suite - Satellite Telemetry.06 Logs</stat>
+<stat name="07 Upgrade" id="s1-s7" pass="2" fail="0" skip="0">Linux Integration Suite - Satellite Telemetry.07 Upgrade</stat>
+<stat name="08 Removal" id="s1-s8" pass="1" fail="0" skip="0">Linux Integration Suite - Satellite Telemetry.08 Removal</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

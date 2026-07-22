@@ -1,0 +1,68 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          satellite-telemetry
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Satellite Telemetry Service
+### END INIT INFO
+
+DAEMON=/usr/bin/satellite-telemetry
+CONFIG=/etc/satellite-telemetry/config.json
+PIDFILE=/var/run/satellite-telemetry.pid
+LOGFILE=/var/log/satellite-telemetry/service.log
+
+case "$1" in
+    start)
+        echo "Starting satellite-telemetry..."
+        if [ -f "$PIDFILE" ]; then
+            PID=$(cat "$PIDFILE")
+            if kill -0 "$PID" 2>/dev/null; then
+                echo "satellite-telemetry is already running (PID $PID)."
+                exit 0
+            fi
+        fi
+        nohup "$DAEMON" run --config "$CONFIG" --pid-file "$PIDFILE" --log-file "$LOGFILE" >> "$LOGFILE" 2>&1 &
+        sleep 1
+        if [ -f "$PIDFILE" ]; then
+            echo "Started satellite-telemetry (PID $(cat "$PIDFILE"))."
+        else
+            echo "Failed to start satellite-telemetry."
+            exit 1
+        fi
+        ;;
+    stop)
+        echo "Stopping satellite-telemetry..."
+        if [ -f "$PIDFILE" ]; then
+            PID=$(cat "$PIDFILE")
+            kill -TERM "$PID" 2>/dev/null || true
+            rm -f "$PIDFILE"
+            echo "Stopped satellite-telemetry."
+        else
+            echo "satellite-telemetry is not running."
+        fi
+        ;;
+    status)
+        if [ -f "$PIDFILE" ]; then
+            PID=$(cat "$PIDFILE")
+            if kill -0 "$PID" 2>/dev/null; then
+                echo "satellite-telemetry is running (PID $PID)."
+                exit 0
+            fi
+        fi
+        echo "satellite-telemetry is stopped."
+        exit 3
+        ;;
+    restart)
+        $0 stop
+        sleep 1
+        $0 start
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|status|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0

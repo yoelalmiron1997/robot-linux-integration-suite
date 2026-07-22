@@ -1,0 +1,9 @@
+Package: satellite-telemetry
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: all
+Maintainer: QA Integration Team <qa-team@example.com>
+Depends: python3, curl
+Description: Synthetic Satellite Telemetry Service for Linux Integration Testing.
+ Demonstrates Debian package testing using Robot Framework.

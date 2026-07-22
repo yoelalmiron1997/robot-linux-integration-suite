@@ -1,0 +1,13 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+    remove|deconfigure)
+        if [ -f /etc/init.d/satellite-telemetry ]; then
+            /etc/init.d/satellite-telemetry stop || true
+        fi
+        echo "[PRERM] satellite-telemetry service stopped for removal."
+    ;;
+esac
+
+exit 0

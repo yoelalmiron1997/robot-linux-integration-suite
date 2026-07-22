@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robot Framework Linux Integration Testing - Engineering Case Study</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <span class="meta-badge">QA & Automation Engineering Case Study</span>
+            <h1>Robot Framework Linux Integration Testing</h1>
+            <p class="subtitle">Automated validation of software distributed as Debian (.deb) packages on Linux environments.</p>
+            <div class="tech-tags">
+                <span class="tag">Robot Framework</span>
+                <span class="tag">Python 3</span>
+                <span class="tag">Linux Debian (.deb)</span>
+                <span class="tag">dpkg / apt</span>
+                <span class="tag">Docker</span>
+                <span class="tag">GitHub Actions</span>
+            </div>
+        </header>
+
+        <main>
+            <section id="problem">
+                <h2>1. Problem & Context</h2>
+                <p>
+                    Software deployed to enterprise Linux systems is frequently packaged as Debian binaries (<code>.deb</code>). Validating these packages requires more than standard API or web UI testing: it demands verifying package installation states, pre/post installation scripts, file structure placement, service lifecycle execution, configuration schema persistence across upgrades, and clean uninstallation without orphan files.
+                </p>
+                <p>
+                    This project demonstrates an end-to-end integration testing suite built around <strong>Robot Framework</strong> and <strong>Python</strong> to validate a synthetic daemon named <code>satellite-telemetry</code> across its entire lifecycle on Linux.
+                </p>
+            </section>
+
+            <section id="architecture">
+                <h2>2. Test System Architecture</h2>
+                <p>The system under test is packaged as Debian binaries (<code>v1.0.0</code> and <code>v1.1.0</code>) and tested in an isolated Debian Linux container environment.</p>
+
+                <div class="workflow-container">
+                    <div class="flow-step-wrapper">
+                        <div class="flow-node">Debian Package (.deb)</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-node">Installation (dpkg)</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-node">Configuration JSON</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-node">Service Process</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-node">Integration Tests</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-node highlight">Robot Framework</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-node highlight">Test Evidence</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="test-strategy">
+                <h2>3. Test Strategy & Custom Library</h2>
+                <p>
+                    Robot Framework acts as the core orchestration engine. To avoid messy bash commands embedded inside test cases, reusable keywords are abstracted across specialized resource files and a custom Python library (<code>LinuxPackageLibrary.py</code>).
+                </p>
+                <p>The custom library extends Robot Framework to query package databases via <code>dpkg-query</code>, parse JSON configuration files, inspect system log files, and verify running process PIDs.</p>
+            </section>
+
+            <section id="test-cases">
+                <h2>4. Automated Test Matrix (15 Test Cases)</h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Test Case Name</th>
+                                <th>Category</th>
+                                <th>Target Behavior</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="code-id">TC-001</td>
+                                <td>Install Package</td>
+                                <td>Installation</td>
+                                <td>Clean installation of .deb package via dpkg</td>
+                            </tr>
+                            <tr>
+                                <td class="code-id">TC-002</td>
+                                <td>Validate Installed Version</td>
+                                <td>Installation</td>
+                                <td>Verify dpkg-query version matches 1.0.0</td>
+                            </tr>
+                            <tr>
+                                <td class="code-id">TC-003</td>
+                                <td>Validate File Structure</td>
+                                <td>Installation</td>
+                                <td>Verify placement of binary, init script, and configs</td>
+                            </tr>
+                            <tr>
+                                <td class="code-id">TC-004</td>
+                                <td>Validate Dependencies</td>
+                                <td>Dependencies</td>
+                                <td>Assert metadata declares python3 and curl</td>
+                            </tr>
+                            <tr>
+                                <td class="code-id">TC-005</td>
+                                <td>Config File Validation</td>
+                                <td>Configuration</td>
+                                <td>Parse /etc/satellite-telemetry/config.json schema</td>
+                            </tr>
+                            <tr>
+                                <td class="code-id">TC-006</td>
+                                <td>Service Startup</td>
+                                <td>Service</td>
+                                <td>Start service and confirm process ID creation</td>
+                            </tr>
+                            <tr>
+                                <td class="code-id">TC-007</td>
+                                <td>Service Stop</td>
+                                <td>Service</td>
+                                <td>Stop service and confirm PID file cleanup</td>
+                            </tr>
+                            <tr>
+                                <td class="code-id">TC-008</td>
+                                <td>Health Endpoint Check</td>
+                                <td>Integration</td>
+                                <td>HTTP GET /health returns 200 OK JSON body</td>
+                            </tr>
+                            <tr>
+                                <td class="code-id">TC-009</td>
+                                <td>Log Formatting Validation</td>
+                                <td>Integration</td>
+                                <td>Inspect /var/log/satellite-telemetry/service.log</td>
+                            </tr>
+                            <tr>
+                                <td class="code-id">TC-010</td>
+                                <td>Package Upgrade (v1.1.0)</td>
+                                <td>Upgrade</td>
+                                <td>Perform in-place upgrade from 1.0.0 to 1.1.0</td>
+                            </tr>
+                            <tr>
+                                <td class="code-id">TC-011</td>
+                                <td>Config Preservation</td>
+                                <td>Upgrade</td>
+                                <td>Assert modified settings persist after upgrade</td>
+                            </tr>
+                            <tr>
+                                <td class="code-id">TC-012</td>
+                                <td>Clean Package Removal</td>
+                                <td>Removal</td>
+                                <td>Purge package and verify file system cleanup</td>
+                            </tr>
+                            <tr>
+                                <td class="code-id">TC-013</td>
+                                <td>Missing Dependency Case</td>
+                                <td>Dependencies</td>
+                                <td>Check dependency declaration handling</td>
+                            </tr>
+                            <tr>
+                                <td class="code-id">TC-014</td>
+                                <td>Invalid Config Handling</td>
+                                <td>Negative</td>
+                                <td>Verify daemon refuses start on malformed JSON</td>
+                            </tr>
+                            <tr>
+                                <td class="code-id">TC-015</td>
+                                <td>SIGKILL Service Recovery</td>
+                                <td>Recovery</td>
+                                <td>Kill process with SIGKILL and verify recovery</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="execution">
+                <h2>5. Execution & Reproducibility</h2>
+                <p>The entire suite is fully reproducible locally via Docker or in continuous integration via GitHub Actions:</p>
+
+                <pre><code><span class="comment"># Run inside Docker container</span>
+<span class="command">docker build -t robot-linux-suite .</span>
+<span class="command">docker run --rm -v $(pwd)/output:/app/output robot-linux-suite</span></code></pre>
+            </section>
+
+            <section id="evidence">
+                <h2>6. Test Evidence & CI Pipeline</h2>
+                <div class="evidence-box">
+                    <h3>Generated Evidence Artifacts</h3>
+                    <p>Upon execution, Robot Framework generates complete HTML and XML reports:</p>
+                    <div class="btn-group">
+                        <a href="../output/report.html" class="btn btn-primary" target="_blank">View report.html</a>
+                        <a href="../output/log.html" class="btn" target="_blank">View log.html</a>
+                        <a href="https://github me" class="btn" target="_blank">GitHub Repository</a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Robot Framework Linux Integration Testing Suite — Engineering Portfolio Case Study</p>
+        </footer>
+    </div>
+</body>
+</html>

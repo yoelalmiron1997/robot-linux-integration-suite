@@ -1,0 +1,50 @@
+name: Robot Framework Linux Integration Suite
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  integration-tests:
+    name: Run Robot Framework Integration Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Grant Execution Permissions
+        run: |
+          chmod +x scripts/*.sh
+
+      - name: Build Debian Packages
+        run: |
+          ./scripts/build_deb.sh
+
+      - name: Run Robot Framework Integration Suite
+        run: |
+          sudo ./scripts/run_tests.sh
+
+      - name: Upload Test Evidence Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: robot-framework-test-evidence
+          path: |
+            output/report.html
+            output/log.html
+            output/output.xml
+          retention-days: 14

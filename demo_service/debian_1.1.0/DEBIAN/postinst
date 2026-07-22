@@ -1,0 +1,14 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+    configure)
+        chmod 755 /usr/bin/satellite-telemetry || true
+        chmod 755 /etc/init.d/satellite-telemetry || true
+        mkdir -p /var/log/satellite-telemetry
+        mkdir -p /etc/satellite-telemetry
+        echo "[POSTINST] satellite-telemetry package v1.1.0 configured successfully."
+    ;;
+esac
+
+exit 0

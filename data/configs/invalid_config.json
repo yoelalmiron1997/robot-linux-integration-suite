@@ -1,0 +1,8 @@
+{
+    "service_name": "satellite-telemetry",
+    "version": "1.0.0",
+    "host": "0.0.0.0",
+    "port": "INVALID_PORT_STRING",
+    "log_level": "UNKNOWN",
+    BROKEN_SYNTAX_HERE
+}

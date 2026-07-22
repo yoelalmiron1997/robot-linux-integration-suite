@@ -1,0 +1,15 @@
+{
+    "service_name": "satellite-telemetry",
+    "version": "1.1.0",
+    "host": "0.0.0.0",
+    "port": 8080,
+    "log_level": "DEBUG",
+    "telemetry_interval_sec": 3,
+    "enabled_sensors": [
+        "temperature",
+        "battery",
+        "altitude",
+        "velocity",
+        "solar_panel"
+    ]
+}
