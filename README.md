@@ -1,74 +1,74 @@
 # Robot Framework Linux Integration Testing
 
-Automated integration testing suite for validating software distributed as Debian (`.deb`) packages on Linux operating systems.
+Suite automatizada de pruebas de integración para validar software distribuido mediante paquetes Debian (`.deb`) en sistemas operativos Linux.
 
-## Why this project exists
+## Por qué existe este proyecto
 
-This repository demonstrates how to structure and run automated integration tests for Linux software packages using Robot Framework and Python. It validates the full lifecycle of a Linux service: Debian package installation, file layout, configuration schema validation, process management, HTTP health endpoint response, log inspection, clean package upgrades, and package removal.
+Este repositorio demuestra cómo estructurar y ejecutar pruebas de integración automatizadas para software empaquetado en Linux utilizando Robot Framework y Python. Valida el ciclo de vida completo de un servicio Linux: instalación de paquetes Debian, verificación de estructura de archivos en el sistema operativo, validación de esquemas de configuración, gestión de procesos Unix, respuestas de endpoints HTTP de salud, análisis de logs de ejecución, actualizaciones limpias de paquetes e in-place upgrades, y remoción de paquetes sin dejar archivos huérfanos.
 
-> **Disclaimer**: This project recreates general testing patterns I have worked with professionally using a fully synthetic system. It does not contain proprietary source code, internal configurations, infrastructure details or company data.
+> **Aclaración**: Este proyecto recrea patrones generales de prueba con los que he trabajado profesionalmente utilizando un sistema totalmente sintético. No contiene código fuente propietario, configuraciones internas, detalles de infraestructura ni datos confidenciales de ninguna empresa.
 
-## What is tested
+## Qué se prueba
 
-The target software under test is `satellite-telemetry`, a synthetic demonstration daemon. The suite validates:
+El software bajo prueba es `satellite-telemetry`, un demonio sintético de demostración desarrollado en Python. La suite valida:
 
-- Package integrity and metadata (dependencies, versions).
-- Clean package installation and removal via `dpkg`.
-- Default configuration file parsing and invalid configuration error handling.
-- Service startup, process lifecycle, and PID tracking via POSIX service management.
-- HTTP `/health` API contract response parsing.
-- Service execution logging and log formatting.
-- In-place package upgrades (`1.0.0` -> `1.1.0`) and configuration preservation across upgrades.
-- Process recovery following abrupt process termination (`SIGKILL`).
+- Integridad y metadatos del paquete (dependencias declaradas, versiones).
+- Instalación limpia y remoción del paquete mediante `dpkg`.
+- Lectura de archivos de configuración JSON predeterminados y manejo de errores ante sintaxis JSON corrupta.
+- Inicio del servicio, ciclo de vida del proceso y registro del archivo PID mediante control POSIX de servicios.
+- Contrato de respuesta y consumo del endpoint de salud HTTP `GET /health`.
+- Registro e inspección de logs de ejecución en `/var/log/satellite-telemetry/service.log`.
+- Actualización in-place del paquete (`1.0.0` -> `1.1.0`) y preservación de configuraciones modificadas por el usuario tras la actualización.
+- Recuperación del servicio tras una terminación abrupta e inesperada del proceso (`SIGKILL`).
 
-## Test architecture
+## Arquitectura de pruebas
 
 ```text
-Debian Package (.deb)
+Paquete Debian (.deb)
         │
         ▼
-Linux Environment (Debian/Ubuntu)
+Entorno Linux (Debian/Ubuntu)
         │
         ▼
-Installation (dpkg -i)
+Instalación (dpkg -i)
         │
         ▼
-Configuration (/etc/satellite-telemetry/config.json)
+Configuración (/etc/satellite-telemetry/config.json)
         │
         ▼
-Service Daemon (/etc/init.d/satellite-telemetry)
+Servicio Daemon (/etc/init.d/satellite-telemetry)
         │
         ▼
-Integration Validation (HTTP /health, logs, PID, files)
+Validación de Integración (HTTP /health, logs, PID, archivos)
         │
         ▼
-Robot Framework & Custom Python Library
+Robot Framework & Librería Personalizada en Python
         │
         ▼
-Test Evidence (report.html, log.html, output.xml)
+Evidencia de Pruebas (report.html, log.html, output.xml)
 ```
 
-## Test cases
+## Casos de prueba
 
-| ID | Test Case | Type | Description |
+| ID | Caso de Prueba | Tipo | Descripción |
 |---|---|---|---|
-| **TC-001** | Install Satellite Telemetry Package | Installation | Validates clean installation of the `.deb` package v1.0.0. |
-| **TC-002** | Validate Installed Version | Installation | Verifies installed version reported by `dpkg-query` matches `1.0.0`. |
-| **TC-003** | Validate Installed Files Structure | Installation | Confirms executables, configuration, and log directories exist. |
-| **TC-004** | Validate Package Dependencies Requirement | Dependencies | Verifies declared dependencies (`python3`, `curl`). |
-| **TC-005** | Validate Configuration File Schema | Configuration | Validates JSON schema and default values in `/etc/satellite-telemetry/config.json`. |
-| **TC-006** | Validate Service Startup | Service | Starts service and confirms running state and PID creation. |
-| **TC-007** | Validate Service Stop | Service | Stops service and confirms process termination and PID file cleanup. |
-| **TC-008** | Health Endpoint Validation | Integration | Performs HTTP GET request to `/health` and asserts `200 OK` JSON body. |
-| **TC-009** | Validate Log Generation and Formatting | Integration | Inspects `/var/log/satellite-telemetry/service.log` for expected log entries. |
-| **TC-010** | Perform Package Upgrade to Version 1.1.0 | Upgrade | Upgrades installed package to v1.1.0 and checks updated version. |
-| **TC-011** | Validate Configuration Preservation After Upgrade | Upgrade | Asserts user-modified configuration fields persist across upgrades. |
-| **TC-012** | Validate Clean Package Removal | Removal | Purges package via `dpkg -P` and checks system file cleanup. |
-| **TC-013** | Missing Dependency Scenario | Dependencies | Checks package dependency declaration logic. |
-| **TC-014** | Invalid Configuration Scenario | Negative | Asserts service fails to start gracefully with malformed JSON config. |
-| **TC-015** | Service Recovery After SIGKILL | Recovery | Kills daemon process with `SIGKILL` and verifies service restart capability. |
+| **TC-001** | Install Satellite Telemetry Package | Instalación | Valida la instalación limpia del paquete `.deb` v1.0.0 mediante `dpkg`. |
+| **TC-002** | Validate Installed Version | Instalación | Confirma que la versión reportada por `dpkg-query` corresponda a `1.0.0`. |
+| **TC-003** | Validate Installed Files Structure | Instalación | Verifica la presencia de binarios, scripts de servicio y configuraciones. |
+| **TC-004** | Validate Package Dependencies Requirement | Dependencias | Comprueba que los metadatos declaren dependencias obligatorias (`python3`, `curl`). |
+| **TC-005** | Validate Configuration File Schema | Configuración | Valida la sintaxis JSON y campos obligatorios en `/etc/satellite-telemetry/config.json`. |
+| **TC-006** | Validate Service Startup | Servicio | Inicia el servicio y confirma la creación del proceso y archivo `.pid`. |
+| **TC-007** | Validate Service Stop | Servicio | Detiene el servicio y verifica la liberación de recursos y eliminación del archivo `.pid`. |
+| **TC-008** | Health Endpoint Validation | Integración | Realiza una petición HTTP `GET /health` y valida el payload JSON de respuesta (`200 OK`). |
+| **TC-009** | Validate Log Generation and Formatting | Integración | Analiza el archivo `/var/log/satellite-telemetry/service.log` verificando entradas de evento. |
+| **TC-010** | Perform Package Upgrade to Version 1.1.0 | Actualización | Actualiza in-place el paquete instalado a la versión v1.1.0 y valida el incremento de versión. |
+| **TC-011** | Validate Configuration Preservation After Upgrade | Actualización | Confirma que los parámetros de configuración modificados por el usuario no se sobreescriban al actualizar. |
+| **TC-012** | Validate Clean Package Removal | Remoción | Purga el paquete con `dpkg -P` y verifica la eliminación limpia de archivos en el sistema. |
+| **TC-013** | Missing Dependency Scenario | Dependencias | Comprueba el comportamiento del gestor de paquetes al evaluar dependencias declaradas. |
+| **TC-014** | Invalid Configuration Scenario | Pruebas Negativas | Valida que el servicio rehúse iniciar correctamente si el archivo de configuración está corrupto. |
+| **TC-015** | Service Recovery After SIGKILL | Recuperación | Simula el cierre forzado del proceso (`SIGKILL`) y verifica la capacidad de reinicio del servicio. |
 
-## Project structure
+## Estructura del proyecto
 
 ```text
 robot-linux-integration-suite/
@@ -79,86 +79,86 @@ robot-linux-integration-suite/
 │   ├── configs/
 │   │   ├── valid_config.json
 │   │   └── invalid_config.json
-│   └── packages/                      # Built .deb artifacts
+│   └── packages/                      # Archivos .deb generados
 ├── demo_service/
-│   ├── src/satellite_telemetry.py    # Synthetic Python daemon
-│   ├── debian_1.0.0/                 # Package structure v1.0.0
-│   └── debian_1.1.0/                 # Package structure v1.1.0
+│   ├── src/satellite_telemetry.py    # Demonio sintético en Python
+│   ├── debian_1.0.0/                 # Estructura del paquete v1.0.0
+│   └── debian_1.1.0/                 # Estructura del paquete v1.1.0
 ├── libraries/
-│   └── LinuxPackageLibrary.py        # Custom Robot Framework Python Library
+│   └── LinuxPackageLibrary.py        # Custom Library de Robot Framework en Python
 ├── resources/
 │   ├── common.resource
 │   ├── package_keywords.resource
 │   ├── service_keywords.resource
 │   └── validation_keywords.resource
-├── tests/                            # Robot Framework Test Suites
+├── tests/                            # Suites de prueba de Robot Framework
 ├── scripts/
-│   ├── build_deb.sh                  # Builds .deb packages locally
-│   └── run_tests.sh                  # Executes full test suite
-├── docs/                             # Engineering Case Study Portfolio
-└── .github/workflows/robot-tests.yml # CI/CD Pipeline
+│   ├── build_deb.sh                  # Script Bash para empaquetar los .deb
+│   └── run_tests.sh                  # Script de ejecución unificada
+├── docs/                             # Caso de estudio técnico (Portfolio Web)
+└── .github/workflows/robot-tests.yml # Pipeline de CI/CD
 ```
 
-## Running locally
+## Ejecución local
 
-### Prerequisites
-- Linux OS (Debian, Ubuntu, or WSL2)
+### Requisitos previos
+- Sistema operativo Linux (Debian, Ubuntu o WSL2 en Windows)
 - Python 3.10+
-- `dpkg-deb` and `dpkg` package management tools
+- Herramientas de empaquetado `dpkg` y `dpkg-deb`
 
-### Execution Steps
-1. Clone repository:
+### Pasos de ejecución
+1. Clonar el repositorio:
    ```bash
-   git clone https://github.com/your-username/robot-linux-integration-suite.git
+   git clone https://github.com/yoelalmiron1997/robot-linux-integration-suite.git
    cd robot-linux-integration-suite
    ```
-2. Install Python requirements:
+2. Instalar dependencias de Python:
    ```bash
    pip install -r requirements.txt
    ```
-3. Build `.deb` packages:
+3. Construir los paquetes `.deb` localmente:
    ```bash
    ./scripts/build_deb.sh
    ```
-4. Execute Robot Framework test suite (requires root privileges for `dpkg` installation tests):
+4. Ejecutar la suite de prueba (requiere permisos de superusuario `sudo` para operaciones de `dpkg`):
    ```bash
    sudo ./scripts/run_tests.sh
    ```
 
-## Running with Docker
+## Ejecución con Docker
 
-Docker provides a fully isolated Debian container without modifying your local host operating system.
+Docker permite reproducir de manera aislada y determinística el entorno Debian sin afectar el sistema operativo anfitrión.
 
 ```bash
-# Build Docker image
+# Construir la imagen de Docker
 docker build -t robot-linux-suite .
 
-# Run test suite and mount output directory for evidence artifacts
+# Ejecutar la suite de pruebas y montar la carpeta output/ para extraer evidencias
 docker run --rm -v $(pwd)/output:/app/output robot-linux-suite
 ```
 
-## Test evidence
+## Evidencia de pruebas
 
-After execution, Robot Framework generates evidence artifacts in the `output/` directory:
+Al finalizar la ejecución, Robot Framework genera archivos de evidencia gráfica y estructurada en el directorio `output/`:
 
-- `output/report.html`: High-level HTML summary report with pass/fail ratios and execution metrics.
-- `output/log.html`: Detailed step-by-step execution log with exact keyword outputs, arguments, and timestamps.
-- `output/output.xml`: Machine-readable XML results file suitable for CI/CD parsing.
+- `output/report.html`: Reporte visual en HTML con métricas generales de ejecución y tasa de aprobación.
+- `output/log.html`: Registro detallado paso a paso con timestamps, argumentos y valores retornados por cada keyword.
+- `output/output.xml`: Resultados en formato XML para integración con dashboards de CI/CD.
 
-## CI
+## Integración Continua (CI)
 
-GitHub Actions automatically executes the suite on push or pull requests. The workflow:
+GitHub Actions ejecuta automáticamente la suite en cada `push` o `pull request`. El pipeline:
 
-1. Provisions a clean Ubuntu environment.
-2. Installs dependencies.
-3. Builds synthetic Debian packages (`v1.0.0` and `v1.1.0`).
-4. Executes the full Robot Framework test suite under root permissions.
-5. Uploads `log.html`, `report.html`, and `output.xml` as workflow artifacts.
+1. Aprovisiona un contenedor con Ubuntu/Debian.
+2. Instala dependencias y Robot Framework.
+3. Empaqueta los archivos `.deb` sintéticos (versiones `1.0.0` y `1.1.0`).
+4. Ejecuta la suite de pruebas bajo permisos de root.
+5. Publica los artefactos `log.html`, `report.html` y `output.xml` disponibles para descarga.
 
-## Technologies
+## Tecnologías
 
-- **Robot Framework**: Keyword-driven test automation runner.
-- **Python 3**: Custom keyword library and synthetic daemon implementation.
+- **Robot Framework**: Runner de pruebas automatizadas guiadas por keywords.
+- **Python 3**: Implementación de la librería personalizada de keywords y demonio del servicio sintético.
 - **Linux Debian Packaging**: `.deb`, `dpkg`, `dpkg-deb`, `apt`.
-- **Docker**: Isolated test execution environment.
-- **GitHub Actions**: Continuous Integration pipeline.
+- **Docker**: Entorno aislado y reproducible de ejecución.
+- **GitHub Actions**: Pipeline de integración continua.
