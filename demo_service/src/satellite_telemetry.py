@@ -108,7 +108,11 @@ def run_server(config_path, pid_file, log_file):
     port = config.get("port", 8080)
     host = config.get("host", "0.0.0.0")
 
-    # Write PID file
+    server = ReuseAddrHTTPServer((host, port), HealthRequestHandler)
+    server.config_path = config_path
+    server.log_file = log_file
+
+    # Write PID file after HTTP server socket is successfully bound
     pid = os.getpid()
     try:
         os.makedirs(os.path.dirname(pid_file), exist_ok=True)
@@ -117,10 +121,6 @@ def run_server(config_path, pid_file, log_file):
         log(f"Service running with PID {pid}, PID file written to {pid_file}", log_file)
     except Exception as e:
         log(f"WARNING: Could not write PID file {pid_file}: {e}", log_file)
-
-    server = ReuseAddrHTTPServer((host, port), HealthRequestHandler)
-    server.config_path = config_path
-    server.log_file = log_file
 
     def signal_handler(signum, frame):
         log(f"Received signal {signum}. Shutting down service...", log_file)

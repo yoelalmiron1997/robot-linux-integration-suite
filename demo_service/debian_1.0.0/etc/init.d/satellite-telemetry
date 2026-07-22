@@ -24,7 +24,7 @@ case "$1" in
             fi
         fi
         nohup "$DAEMON" run --config "$CONFIG" --pid-file "$PIDFILE" --log-file "$LOGFILE" >> "$LOGFILE" 2>&1 &
-        sleep 1
+        sleep 2
         if [ -f "$PIDFILE" ]; then
             echo "Started satellite-telemetry (PID $(cat "$PIDFILE"))."
         else
