@@ -36,7 +36,7 @@ jobs:
 
       - name: Run Robot Framework Integration Suite
         run: |
-          sudo ./scripts/run_tests.sh
+          sudo env "PATH=$PATH" ./scripts/run_tests.sh
 
       - name: Upload Test Evidence Artifacts
         if: always()

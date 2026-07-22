@@ -20,7 +20,7 @@ echo "[INFO] Executing Robot Framework Test Suite..."
 
 mkdir -p "$ROOT_DIR/output"
 
-robot --outputdir "$ROOT_DIR/output" \
+python3 -m robot --outputdir "$ROOT_DIR/output" \
       --loglevel INFO \
       --name "Linux Integration Suite - Satellite Telemetry" \
       --tagdoc installation:"Installation Tests" \
