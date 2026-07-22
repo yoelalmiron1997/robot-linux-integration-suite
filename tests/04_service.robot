@@ -28,6 +28,6 @@ TC-015 Service Recovery After SIGKILL
     Service Should Be Running  ${PACKAGE_NAME}
     ${pid}=                   Get Process Id By Name    satellite-telemetry
     Run Process               kill    -9    ${pid}
-    Sleep                     1s
+    Sleep                     2s
     Start Service             ${PACKAGE_NAME}
     Service Should Be Running  ${PACKAGE_NAME}
