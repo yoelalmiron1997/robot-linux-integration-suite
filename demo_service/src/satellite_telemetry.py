@@ -40,7 +40,7 @@ def load_config(config_path):
 
 class HealthRequestHandler(BaseHTTPRequestHandler):
     version_string = f"SatelliteTelemetry/{VERSION}"
-    protocol_version = "HTTP/1.1"
+    protocol_version = "HTTP/1.0"
 
     def do_GET(self):
         self.close_connection = True
