@@ -4,9 +4,7 @@ Suite automatizada de pruebas de integración para validar software distribuido 
 
 ## Por qué existe este proyecto
 
-Este repositorio demuestra cómo estructurar y ejecutar pruebas de integración automatizadas para software empaquetado en Linux utilizando Robot Framework y Python. Valida el ciclo de vida completo de un servicio Linux: instalación de paquetes Debian, verificación de estructura de archivos en el sistema operativo, validación de esquemas de configuración, gestión de procesos Unix, respuestas de endpoints HTTP de salud, análisis de logs de ejecución, actualizaciones limpias de paquetes e in-place upgrades, y remoción de paquetes sin dejar archivos huérfanos.
-
-> **Aclaración**: Este proyecto recrea patrones generales de prueba con los que he trabajado profesionalmente utilizando un sistema totalmente sintético. No contiene código fuente propietario, configuraciones internas, detalles de infraestructura ni datos confidenciales de ninguna empresa.
+Este repositorio demuestra cómo estructurar y ejecutar pruebas de integración automatizadas para software empaquetado en Linux utilizando Robot Framework y Python. Valida el ciclo de vida completo de un servicio Linux.
 
 ## Qué se prueba
 
@@ -99,9 +97,9 @@ robot-linux-integration-suite/
 └── .github/workflows/robot-tests.yml # Pipeline de CI/CD
 ```
 
-## Ejecución local
+## Ejecución (local)
 
-### Requisitos previos
+### Requisitos previos (Ambiente)
 - Sistema operativo Linux (Debian, Ubuntu o WSL2 en Windows)
 - Python 3.10+
 - Herramientas de empaquetado `dpkg` y `dpkg-deb`
