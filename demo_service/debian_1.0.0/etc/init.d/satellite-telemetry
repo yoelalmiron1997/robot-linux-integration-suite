@@ -37,6 +37,16 @@ case "$1" in
         if [ -f "$PIDFILE" ]; then
             PID=$(cat "$PIDFILE")
             kill -TERM "$PID" 2>/dev/null || true
+            for i in $(seq 1 10); do
+                if ! kill -0 "$PID" 2>/dev/null; then
+                    break
+                fi
+                sleep 0.5
+            done
+            if kill -0 "$PID" 2>/dev/null; then
+                kill -9 "$PID" 2>/dev/null || true
+                sleep 0.5
+            fi
             rm -f "$PIDFILE"
             echo "Stopped satellite-telemetry."
         else
