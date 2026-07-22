@@ -11,10 +11,8 @@ echo " Robot Framework Linux Integration Testing Suite Runner"
 echo "============================================================"
 
 # Ensure packages are built
-if [ ! -f "$ROOT_DIR/data/packages/satellite-telemetry_1.0.0_all.deb" ]; then
-    echo "[INFO] Building Debian packages..."
-    ./scripts/build_deb.sh
-fi
+echo "[INFO] Building Debian packages..."
+./scripts/build_deb.sh
 
 echo "[INFO] Executing Robot Framework Test Suite..."
 

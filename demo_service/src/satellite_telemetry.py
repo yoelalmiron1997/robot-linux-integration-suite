@@ -44,43 +44,53 @@ class HealthRequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         self.close_connection = True
-        if self.path == "/health":
-            # Load config dynamically if available to report current settings
+        try:
             config_path = getattr(self.server, "config_path", DEFAULT_CONFIG_PATH)
-            service_version = VERSION
+            log_file = getattr(self.server, "log_file", DEFAULT_LOG_PATH)
+
+            if self.path == "/health":
+                service_version = VERSION
+                try:
+                    cfg = load_config(config_path)
+                    service_version = cfg.get("version", VERSION)
+                except Exception:
+                    pass
+
+                response_data = {
+                    "status": "ok",
+                    "service": "satellite-telemetry",
+                    "version": service_version
+                }
+                body_bytes = json.dumps(response_data, indent=4).encode("utf-8")
+
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(body_bytes)))
+                self.send_header("Connection", "close")
+                self.end_headers()
+                self.wfile.write(body_bytes)
+                log(f"HTTP GET /health - 200 OK", log_file)
+            else:
+                body_bytes = b'{"error": "Not Found"}'
+                self.send_response(404)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(body_bytes)))
+                self.send_header("Connection", "close")
+                self.end_headers()
+                self.wfile.write(body_bytes)
+                log(f"HTTP GET {self.path} - 404 Not Found", log_file)
+        except Exception as e:
             try:
-                cfg = load_config(config_path)
-                service_version = cfg.get("version", VERSION)
+                log(f"ERROR in do_GET: {e}")
             except Exception:
                 pass
 
-            response_data = {
-                "status": "ok",
-                "service": "satellite-telemetry",
-                "version": service_version
-            }
-            body_bytes = json.dumps(response_data, indent=4).encode("utf-8")
-
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.send_header("Content-Length", str(len(body_bytes)))
-            self.send_header("Connection", "close")
-            self.end_headers()
-            self.wfile.write(body_bytes)
-            log(f"HTTP GET /health - 200 OK")
-        else:
-            body_bytes = b'{"error": "Not Found"}'
-            self.send_response(404)
-            self.send_header("Content-Type", "application/json")
-            self.send_header("Content-Length", str(len(body_bytes)))
-            self.send_header("Connection", "close")
-            self.end_headers()
-            self.wfile.write(body_bytes)
-            log(f"HTTP GET {self.path} - 404 Not Found")
-
     def log_message(self, format, *args):
-        # Override default BaseHTTPRequestHandler logging to route to our log function
-        log(f"HTTP Request: {format % args}")
+        log_file = getattr(self.server, "log_file", DEFAULT_LOG_PATH)
+        try:
+            log(f"HTTP Request: {format % args}", log_file)
+        except Exception:
+            pass
 
 
 class ReuseAddrHTTPServer(HTTPServer):
@@ -110,6 +120,7 @@ def run_server(config_path, pid_file, log_file):
 
     server = ReuseAddrHTTPServer((host, port), HealthRequestHandler)
     server.config_path = config_path
+    server.log_file = log_file
 
     def signal_handler(signum, frame):
         log(f"Received signal {signum}. Shutting down service...", log_file)
