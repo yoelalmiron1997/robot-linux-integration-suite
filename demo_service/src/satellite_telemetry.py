@@ -69,6 +69,7 @@ class HealthRequestHandler(BaseHTTPRequestHandler):
                 self.send_header("Connection", "close")
                 self.end_headers()
                 self.wfile.write(body_bytes)
+                self.wfile.flush()
                 log(f"HTTP GET /health - 200 OK", log_file)
             else:
                 body_bytes = b'{"error": "Not Found"}'
@@ -78,6 +79,7 @@ class HealthRequestHandler(BaseHTTPRequestHandler):
                 self.send_header("Connection", "close")
                 self.end_headers()
                 self.wfile.write(body_bytes)
+                self.wfile.flush()
                 log(f"HTTP GET {self.path} - 404 Not Found", log_file)
         except Exception as e:
             try:
