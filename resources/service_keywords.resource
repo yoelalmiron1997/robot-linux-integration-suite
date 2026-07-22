@@ -33,6 +33,7 @@ Service Should Be Stopped
 
 Query Health Endpoint
     [Documentation]    Sends a GET HTTP request to the /health endpoint with retry logic for port readiness.
+    Delete All Sessions
     Create Session    telemetry_session    ${SERVICE_URL}    verify=False    disable_warnings=1
     ${response}=    Wait Until Keyword Succeeds    5x    1s    GET On Session    telemetry_session    /health
     RETURN    ${response}

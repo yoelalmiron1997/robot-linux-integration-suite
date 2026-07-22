@@ -43,6 +43,7 @@ class HealthRequestHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
 
     def do_GET(self):
+        self.close_connection = True
         if self.path == "/health":
             # Load config dynamically if available to report current settings
             config_path = getattr(self.server, "config_path", DEFAULT_CONFIG_PATH)
