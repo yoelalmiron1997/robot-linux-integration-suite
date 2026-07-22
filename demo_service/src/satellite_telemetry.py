@@ -40,8 +40,12 @@ def load_config(config_path):
 
 
 class HealthRequestHandler(BaseHTTPRequestHandler):
-    version_string = f"SatelliteTelemetry/{VERSION}"
+    server_version = f"SatelliteTelemetry/{VERSION}"
+    sys_version = ""
     protocol_version = "HTTP/1.0"
+
+    def version_string(self):
+        return f"SatelliteTelemetry/{VERSION}"
 
     def do_GET(self):
         self.close_connection = True
@@ -84,7 +88,8 @@ class HealthRequestHandler(BaseHTTPRequestHandler):
                 log(f"HTTP GET {self.path} - 404 Not Found", log_file)
         except Exception as e:
             try:
-                log(f"ERROR in do_GET: {e}")
+                import traceback
+                log(f"ERROR in do_GET:\n{traceback.format_exc()}", log_file)
             except Exception:
                 pass
 
